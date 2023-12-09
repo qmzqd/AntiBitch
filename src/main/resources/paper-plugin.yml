@@ -1,4 +1,0 @@
-name: AntiBitch
-version: '${project.version}'
-main: nb114514.antibitch.AntiBitch
-api-version: '1.20'
