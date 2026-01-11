@@ -1,0 +1,131 @@
+# AntiBitch 反作弊插件配置文件
+
+# Reach 检测配置
+reach:
+  enabled: true
+  max-distance: 3.0
+  max-violations: 5
+  kick-message: "检测到异常攻击距离，请勿使用作弊客户端"
+  alert-message: "[AntiBitch] 玩家 %player% 触发了 Reach 检测 (距离: %distance% 方块)"
+
+# Speed 检测配置
+speed:
+  enabled: true
+  max-speed: 20
+  kick-message: "检测到异常移动速度，请勿使用加速作弊"
+
+# Fly 检测配置
+fly:
+  enabled: true
+  max-air-moves: 10
+  kick-message: "此服务器未启用飞行功能"
+
+# AutoClicker 检测配置
+autoclicker:
+  enabled: true
+  max-clicks-per-second: 15
+  max-violations: 5
+  kick-message: "检测到异常点击速度，请勿使用自动点击器"
+
+# KillAura 检测配置
+killaura:
+  enabled: true
+  max-attacks-per-second: 10
+  max-violations: 5
+  kick-message: "检测到异常攻击频率，请勿使用 KillAura"
+
+# NoFall 检测配置
+nofall:
+  enabled: true
+  threshold: 3.0
+  kick-message: "检测到无坠落伤害，请勿使用 NoFall"
+
+# Criticals 检测配置
+criticals:
+  enabled: true
+  max-crits-per-second: 5
+  kick-message: "检测到异常暴击频率，请勿使用 Criticals"
+
+# Timer 检测配置
+timer:
+  enabled: true
+  max-violations: 5
+  kick-message: "检测到时间加速，请勿使用 Timer"
+
+# NoSlow 检测配置
+noslow:
+  enabled: true
+  max-violations: 5
+  kick-message: "检测到无减速，请勿使用 NoSlow"
+
+# Sprint 检测配置
+sprint:
+  enabled: true
+  max-violations: 5
+  kick-message: "检测到自动疾跑，请勿使用 Sprint"
+
+# Aimbot 检测配置
+aimbot:
+  enabled: true
+  max-violations: 5
+  kick-message: "检测到自动瞄准，请勿使用 Aimbot"
+
+# FastBow 检测配置
+fastbow:
+  enabled: true
+  min-pull-time: 500
+  max-violations: 5
+  kick-message: "检测到快速射箭，请勿使用 FastBow"
+
+# Regen 检测配置
+regen:
+  enabled: true
+  min-heal-interval: 1000
+  max-violations: 5
+  kick-message: "检测到快速回血，请勿使用 Regen"
+
+# Scaffold 检测配置
+scaffold:
+  enabled: true
+  min-place-interval: 100
+  max-violations: 5
+  kick-message: "检测到自动搭桥，请勿使用 Scaffold"
+
+# AutoTool 检测配置
+autotool:
+  enabled: true
+  min-switch-interval: 50
+  max-violations: 5
+  kick-message: "检测到自动切换工具，请勿使用 AutoTool"
+
+# AutoSoup 检测配置
+autosoup:
+  enabled: true
+  min-consume-interval: 200
+  max-violations: 5
+  kick-message: "检测到自动喝汤，请勿使用 AutoSoup"
+
+# InventoryCleaner 检测配置
+inventorycleaner:
+  enabled: true
+  max-clicks-per-second: 20
+  max-violations: 5
+  kick-message: "检测到自动清理背包，请勿使用 InventoryCleaner"
+
+# Sneak 检测配置
+sneak:
+  enabled: true
+  max-duration: 30000
+  max-violations: 5
+  kick-message: "检测到自动潜行，请勿使用 Sneak"
+
+# Hitbox 检测配置
+hitbox:
+  enabled: true
+  max-violations: 5
+  kick-message: "检测到碰撞箱修改，请勿使用 Hitbox"
+
+# 插件设置
+settings:
+  debug-mode: false
+  broadcast-alerts: true

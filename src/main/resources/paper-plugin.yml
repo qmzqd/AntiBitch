@@ -1,4 +1,19 @@
 name: AntiBitch
 version: '${project.version}'
 main: nb114514.antibitch.AntiBitch
-api-version: '1.20'
+api-version: '1.21.11'
+description: '一个用于 Minecraft Paper 服务器的反作弊插件'
+author: qmzqd
+website: https://github.com/qmzqd/AntiBitch
+
+commands:
+  antibitch:
+    description: AntiBitch 插件管理命令
+    usage: /antibitch <reload|status|version>
+    permission: antibitch.admin
+    aliases: [ab, ac]
+
+permissions:
+  antibitch.admin:
+    description: 允许使用 AntiBitch 管理命令
+    default: op
