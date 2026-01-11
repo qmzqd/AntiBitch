@@ -575,7 +575,7 @@ public class AntiBitch extends JavaPlugin implements Listener {
 
         // NoFall 检测（娱乐性质：检测无坠落伤害）
         if (!player.isOnGround() && !player.isFlying()) {
-            lastFallHeight.put(playerId, player.getFallDistance());
+            lastFallHeight.put(playerId, (double) player.getFallDistance());
         }
     }
 
