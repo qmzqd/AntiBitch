@@ -4,7 +4,7 @@ Compact guidance for OpenCode sessions working in this repo.
 
 ## Project
 
-Minecraft Paper 26.2 反作弊插件，Java 25，Maven 构建。单文件实现：所有 19 个检测器和命令处理都在 `src/main/java/nb114514/antibitch/AntiBitch.java`（约 880 行）里。没有分包、没有独立的 Detector 类——不要去找不存在的结构。
+Minecraft Paper 26.2 反作弊插件，Java 25，Maven 构建。单文件实现：所有 100 个检测器和命令处理都在 `src/main/java/nb114514/antibitch/AntiBitch.java`（约 3300 行）里。没有分包、没有独立的 Detector 类——不要去找不存在的结构。
 
 ## Build & verify
 
@@ -29,9 +29,8 @@ Minecraft Paper 26.2 反作弊插件，Java 25，Maven 构建。单文件实现�
 
 ## 已知源码缺陷（改动前必读）
 
-这些是真实存在、可验证的 bug，但符合"娱乐性质检测"的整体定位；除非用户明确要求修复，**不要主动重构**：
-- `KillAura`、`AutoClicker`、`InventoryCleaner` 三个检测在触发时都错误地累加到 `reachViolations`，而不是各自的 violation map（`AntiBitch.java` 中 `onEntityDamageByEntity` 和 `onInventoryClick`）。
-- `AutoSoup` 检测有配置、有字段、`/antibitch status` 也显示其状态，但**没有任何事件处理器实现检测逻辑**——`lastConsumeTime` 只在清理时被访问，是死代码。
+这是真实存在、可验证的 bug，但符合"娱乐性质检测"的整体定位；除非用户明确要求修复，**不要主动重构**：
+- `KillAura`、`AutoClicker`、`InventoryCleaner` 三个检测在触发时都错误地累加到 `reachViolations`，而不是各自的 violation map（`AntiBitch.java` 中 `onEntityDamageByEntity` 和 `onInventoryClick`）。**新加的检测不要沿用此 bug**——每个检测使用自己独立的 violation map。
 
 ## 设计意图
 

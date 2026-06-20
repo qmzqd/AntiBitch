@@ -125,6 +125,562 @@ hitbox:
   max-violations: 5
   kick-message: "检测到碰撞箱修改，请勿使用 Hitbox"
 
+# Nuker 检测配置
+nuker:
+  enabled: true
+  max-blocks-per-second: 15
+  max-violations: 5
+  kick-message: "检测到瞬间破坏多方块，请勿使用 Nuker"
+
+# FastBreak 检测配置
+fastbreak:
+  enabled: true
+  min-break-interval: 50
+  max-violations: 5
+  kick-message: "检测到破坏方块间隔过短，请勿使用 FastBreak"
+
+# FastEat 检测配置
+fasteat:
+  enabled: true
+  min-eat-interval: 1500
+  max-violations: 5
+  kick-message: "检测到进食间隔过短，请勿使用 FastEat"
+
+# WaterWalk 检测配置
+waterwalk:
+  enabled: true
+  max-violations: 5
+  kick-message: "检测到水面行走，请勿使用 WaterWalk (Jesus)"
+
+# Glide 检测配置
+glide:
+  enabled: true
+  max-fall-speed: 0.2
+  max-violations: 5
+  kick-message: "检测到空中缓降滑行，请勿使用 Glide"
+
+# Step 检测配置
+step:
+  enabled: true
+  max-height: 0.6
+  max-violations: 5
+  kick-message: "检测到异常台阶上升，请勿使用 Step"
+
+# AntiKnockback 检测配置
+antiknockback:
+  enabled: true
+  min-ratio: 0.5
+  max-violations: 5
+  kick-message: "检测到击退抵抗，请勿使用 AntiKnockback"
+
+# NoSwing 检测配置
+noswing:
+  enabled: true
+  swing-window-ms: 500
+  max-violations: 5
+  kick-message: "检测到攻击无挥动，请勿使用 NoSwing"
+
+# Spider 检测配置
+spider:
+  enabled: true
+  max-violations: 5
+  kick-message: "检测到贴墙攀爬，请勿使用 Spider"
+
+# NoWeb 检测配置
+noweb:
+  enabled: true
+  max-speed: 5
+  max-violations: 5
+  kick-message: "检测到蛛网内快速移动，请勿使用 NoWeb"
+
+# FastLadder 检测配置
+fastladder:
+  enabled: true
+  max-speed: 10
+  max-violations: 5
+  kick-message: "检测到梯子快速攀爬，请勿使用 FastLadder"
+
+# BoatFly 检测配置
+boatfly:
+  enabled: true
+  max-air-moves: 5
+  max-violations: 5
+  kick-message: "检测到骑船滞空，请勿使用 BoatFly"
+
+# HighJump 检测配置
+highjump:
+  enabled: true
+  min-height: 1.0
+  max-violations: 5
+  kick-message: "检测到异常高跳，请勿使用 HighJump"
+
+# Dolphin 检测配置
+dolphin:
+  enabled: true
+  max-swim-speed: 12
+  max-violations: 5
+  kick-message: "检测到水中快速游泳，请勿使用 Dolphin"
+
+# Phase 检测配置
+phase:
+  enabled: true
+  max-distance: 1.5
+  max-violations: 5
+  kick-message: "检测到穿墙传送，请勿使用 Phase (Vclip)"
+
+# Blink 检测配置
+blink:
+  enabled: true
+  max-distance: 5.0
+  max-violations: 5
+  kick-message: "检测到异常远距瞬移，请勿使用 Blink"
+
+# FastSneak 检测配置
+fastsneak:
+  enabled: true
+  max-speed: 3
+  max-violations: 5
+  kick-message: "检测到潜行加速，请勿使用 FastSneak"
+
+# Derp 检测配置
+derp:
+  enabled: true
+  max-yaw-change: 180.0
+  max-violations: 5
+  kick-message: "检测到头部异常转动，请勿使用 Derp"
+
+# ElytraSpeed 检测配置
+elytraspeed:
+  enabled: true
+  max-speed: 30
+  max-violations: 5
+  kick-message: "检测到滑翔速度异常，请勿使用 ElytraSpeed"
+
+# XRay 检测配置
+xray:
+  enabled: true
+  max-ores-per-minute: 10
+  max-violations: 5
+  kick-message: "检测到稀有矿石异常高产，请勿使用 XRay"
+
+# Tower 检测配置
+tower:
+  enabled: true
+  min-interval: 200
+  max-violations: 5
+  kick-message: "检测到自动搭塔，请勿使用 Tower"
+
+# ChestStealer 检测配置
+cheststealer:
+  enabled: true
+  max-clicks-per-second: 20
+  max-violations: 5
+  kick-message: "检测到快速偷箱子，请勿使用 ChestStealer"
+
+# AutoArmor 检测配置
+autoarmor:
+  enabled: true
+  min-equip-interval: 100
+  max-violations: 5
+  kick-message: "检测到自动装备护甲，请勿使用 AutoArmor"
+
+# AutoFish 检测配置
+autofish:
+  enabled: true
+  max-fish-per-minute: 10
+  max-violations: 5
+  kick-message: "检测到自动钓鱼，请勿使用 AutoFish"
+
+# FastSprint 检测配置
+fastsprint:
+  enabled: true
+  max-speed: 14
+  max-violations: 5
+  kick-message: "检测到疾跑速度异常，请勿使用 FastSprint"
+
+# IceSpeed 检测配置
+icespeed:
+  enabled: true
+  max-speed: 16
+  max-violations: 5
+  kick-message: "检测到冰上加速，请勿使用 IceSpeed"
+
+# Bhop 检测配置
+bhop:
+  enabled: true
+  max-jumps: 5
+  max-violations: 5
+  kick-message: "检测到连跳，请勿使用 Bhop"
+
+# AirJump 检测配置
+airjump:
+  enabled: true
+  max-violations: 5
+  kick-message: "检测到空中起跳，请勿使用 AirJump"
+
+# Jetpack 检测配置
+jetpack:
+  enabled: true
+  min-up: 0.3
+  max-violations: 5
+  kick-message: "检测到持续上升，请勿使用 Jetpack"
+
+# FastClimbVine 检测配置
+fastclimbvine:
+  enabled: true
+  max-speed: 5
+  max-violations: 5
+  kick-message: "检测到藤蔓快速攀爬，请勿使用 FastClimbVine"
+
+# FastDescend 检测配置
+fastdescend:
+  enabled: true
+  max-speed: -0.6
+  max-violations: 5
+  kick-message: "检测到异常快速下落，请勿使用 FastDescend"
+
+# Strafe 检测配置
+strafe:
+  enabled: true
+  max-violations: 5
+  kick-message: "检测到疾跑横向位移异常，请勿使用 Strafe"
+
+# Float 检测配置
+float:
+  enabled: true
+  max-violations: 5
+  kick-message: "检测到空中悬浮，请勿使用 Float"
+
+# FastSneakAir 检测配置
+fastsneakair:
+  enabled: true
+  max-violations: 5
+  kick-message: "检测到空中潜行，请勿使用 FastSneakAir"
+
+# HeadRoll 检测配置
+headroll:
+  enabled: true
+  max-change: 60.0
+  max-violations: 5
+  kick-message: "检测到头部异常俯仰，请勿使用 HeadRoll"
+
+# TeleportUp 检测配置
+teleportup:
+  enabled: true
+  max-distance: 2.0
+  max-violations: 5
+  kick-message: "检测到纵向瞬移上升，请勿使用 TeleportUp"
+
+# ReachVertical 检测配置
+reachvertical:
+  enabled: true
+  max-distance: 2.0
+  max-violations: 5
+  kick-message: "检测到纵向攻击距离过大，请勿使用 ReachVertical"
+
+# AttackThroughWall 检测配置
+attackthroughwall:
+  enabled: true
+  max-violations: 5
+  kick-message: "检测到隔墙攻击，请勿使用 AttackThroughWall"
+
+# CriticalFake 检测配置
+criticalfake:
+  enabled: true
+  max-violations: 5
+  kick-message: "检测到伪造暴击，请勿使用 CriticalFake"
+
+# TriggerBot 检测配置
+triggerbot:
+  enabled: true
+  max-violations: 5
+  kick-message: "检测到精准冷却攻击，请勿使用 TriggerBot"
+
+# NoCooldown 检测配置
+nocooldown:
+  enabled: true
+  min-cooldown: 400
+  max-violations: 5
+  kick-message: "检测到攻击无冷却，请勿使用 NoCooldown"
+
+# MultiAttack 检测配置
+multiattack:
+  enabled: true
+  max-count: 3
+  max-violations: 5
+  kick-message: "检测到多实体攻击，请勿使用 MultiAttack"
+
+# SnapAim 检测配置
+snapaim:
+  enabled: true
+  max-change: 120.0
+  max-violations: 5
+  kick-message: "检测到攻击瞬间朝向突变，请勿使用 SnapAim"
+
+# AttackWhileSprinting 检测配置
+attackwhilesprinting:
+  enabled: true
+  max-violations: 5
+  kick-message: "检测到疾跑攻击，请勿使用 AttackWhileSprinting"
+
+# FastInteract 检测配置
+fastinteract:
+  enabled: true
+  min-interval: 50
+  max-violations: 5
+  kick-message: "检测到快速交互，请勿使用 FastInteract"
+
+# FastDoor 检测配置
+fastdoor:
+  enabled: true
+  min-interval: 200
+  max-violations: 5
+  kick-message: "检测到快速门切换，请勿使用 FastDoor"
+
+# FastFenceGate 检测配置
+fastfencegate:
+  enabled: true
+  min-interval: 200
+  max-violations: 5
+  kick-message: "检测到快速栅栏门切换，请勿使用 FastFenceGate"
+
+# FastLever 检测配置
+fastlever:
+  enabled: true
+  min-interval: 200
+  max-violations: 5
+  kick-message: "检测到快速拉杆切换，请勿使用 FastLever"
+
+# FastButton 检测配置
+fastbutton:
+  enabled: true
+  min-interval: 200
+  max-violations: 5
+  kick-message: "检测到快速按钮切换，请勿使用 FastButton"
+
+# FastTrapdoor 检测配置
+fasttrapdoor:
+  enabled: true
+  min-interval: 200
+  max-violations: 5
+  kick-message: "检测到快速活板门切换，请勿使用 FastTrapdoor"
+
+# AutoPot 检测配置
+autopot:
+  enabled: true
+  min-interval: 300
+  max-violations: 5
+  kick-message: "检测到自动喷溅药水，请勿使用 AutoPot"
+
+# FastBucket 检测配置
+fastbucket:
+  enabled: true
+  min-interval: 200
+  max-violations: 5
+  kick-message: "检测到快速桶使用，请勿使用 FastBucket"
+
+# FastPotion 检测配置
+fastpotion:
+  enabled: true
+  min-interval: 1500
+  max-violations: 5
+  kick-message: "检测到快速喝药水，请勿使用 FastPotion"
+
+# FastMilk 检测配置
+fastmilk:
+  enabled: true
+  min-interval: 2000
+  max-violations: 5
+  kick-message: "检测到快速喝牛奶，请勿使用 FastMilk"
+
+# FastHoney 检测配置
+fasthoney:
+  enabled: true
+  min-interval: 2000
+  max-violations: 5
+  kick-message: "检测到快速喝蜂蜜，请勿使用 FastHoney"
+
+# BreakReach 检测配置
+breakreach:
+  enabled: true
+  max-distance: 5.0
+  max-violations: 5
+  kick-message: "检测到破坏方块距离过远，请勿使用 BreakReach"
+
+# FastOre 检测配置
+fastore:
+  enabled: true
+  min-interval: 200
+  max-violations: 5
+  kick-message: "检测到快速破坏矿石，请勿使用 FastOre"
+
+# BreakWhileMoving 检测配置
+breakwhilemoving:
+  enabled: true
+  max-speed: 10
+  max-violations: 5
+  kick-message: "检测到移动中破坏方块，请勿使用 BreakWhileMoving"
+
+# PlaceReach 检测配置
+placereach:
+  enabled: true
+  max-distance: 5.0
+  max-violations: 5
+  kick-message: "检测到放置方块距离过远，请勿使用 PlaceReach"
+
+# FastPlace 检测配置
+fastplace:
+  enabled: true
+  min-interval: 50
+  max-violations: 5
+  kick-message: "检测到快速放置方块，请勿使用 FastPlace"
+
+# FastShiftClick 检测配置
+fastshiftclick:
+  enabled: true
+  min-interval: 50
+  max-violations: 5
+  kick-message: "检测到快速 shift-click，请勿使用 FastShiftClick"
+
+# FastHotbarSwap 检测配置
+fasthotbarswap:
+  enabled: true
+  min-interval: 50
+  max-violations: 5
+  kick-message: "检测到快速快捷栏切换，请勿使用 FastHotbarSwap"
+
+# SneakSpam 检测配置
+sneakspam:
+  enabled: true
+  min-interval: 100
+  max-violations: 5
+  kick-message: "检测到快速潜行切换，请勿使用 SneakSpam"
+
+# FastDrop 检测配置
+fastdrop:
+  enabled: true
+  min-interval: 100
+  max-violations: 5
+  kick-message: "检测到快速丢物品，请勿使用 FastDrop"
+
+# FastPickup 检测配置
+fastpickup:
+  enabled: true
+  min-interval: 100
+  max-violations: 5
+  kick-message: "检测到快速捡物品，请勿使用 FastPickup"
+
+# FastProjectile 检测配置
+fastprojectile:
+  enabled: true
+  min-interval: 400
+  max-violations: 5
+  kick-message: "检测到快速发射抛射物，请勿使用 FastProjectile"
+
+# SprintSpam 检测配置
+sprintspam:
+  enabled: true
+  min-interval: 100
+  max-violations: 5
+  kick-message: "检测到快速疾跑切换，请勿使用 SprintSpam"
+
+# FlightSpam 检测配置
+flightspam:
+  enabled: true
+  min-interval: 100
+  max-violations: 5
+  kick-message: "检测到快速飞行切换，请勿使用 FlightSpam"
+
+# GlideSpam 检测配置
+glidespam:
+  enabled: true
+  min-interval: 100
+  max-violations: 5
+  kick-message: "检测到快速滑翔切换，请勿使用 GlideSpam"
+
+# SwimSpam 检测配置
+swimspam:
+  enabled: true
+  min-interval: 100
+  max-violations: 5
+  kick-message: "检测到快速游泳切换，请勿使用 SwimSpam"
+
+# SwapSpam 检测配置
+swapspam:
+  enabled: true
+  min-interval: 100
+  max-violations: 5
+  kick-message: "检测到快速主副手切换，请勿使用 SwapSpam"
+
+# NoHunger 检测配置
+nohunger:
+  enabled: true
+  max-violations: 5
+  kick-message: "检测到饥饿值异常，请勿使用 NoHunger"
+
+# FastShear 检测配置
+fastshear:
+  enabled: true
+  min-interval: 200
+  max-violations: 5
+  kick-message: "检测到快速剪羊毛，请勿使用 FastShear"
+
+# FastBucketEmpty 检测配置
+fastbucketempty:
+  enabled: true
+  min-interval: 200
+  max-violations: 5
+  kick-message: "检测到快速倒空桶，请勿使用 FastBucketEmpty"
+
+# FastBucketFill 检测配置
+fastbucketfill:
+  enabled: true
+  min-interval: 200
+  max-violations: 5
+  kick-message: "检测到快速装满桶，请勿使用 FastBucketFill"
+
+# BedSpam 检测配置
+bedspam:
+  enabled: true
+  min-interval: 1000
+  max-violations: 5
+  kick-message: "检测到快速上床，请勿使用 BedSpam"
+
+# AutoTotem 检测配置
+autototem:
+  enabled: true
+  min-interval: 500
+  max-violations: 5
+  kick-message: "检测到自动图腾，请勿使用 AutoTotem"
+
+# FastExp 检测配置
+fastexp:
+  enabled: true
+  min-interval: 100
+  max-violations: 5
+  kick-message: "检测到经验获取过快，请勿使用 FastExp"
+
+# ChatSpam 检测配置
+chatspam:
+  enabled: true
+  min-interval: 1000
+  max-violations: 5
+  kick-message: "检测到刷屏聊天，请勿使用 ChatSpam"
+
+# CommandSpam 检测配置
+commandspam:
+  enabled: true
+  min-interval: 500
+  max-violations: 5
+  kick-message: "检测到刷屏命令，请勿使用 CommandSpam"
+
+# FastEgg 检测配置
+fastegg:
+  enabled: true
+  min-interval: 400
+  max-violations: 5
+  kick-message: "检测到快速丢鸡蛋，请勿使用 FastEgg"
+
 # 插件设置
 settings:
   debug-mode: false
