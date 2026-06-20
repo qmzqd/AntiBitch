@@ -17,7 +17,7 @@ jobs:
 
     strategy:
       matrix:
-        java: [ '21' ]
+        java: [ '25' ]
 
     steps:
     - name: Checkout code
@@ -70,7 +70,7 @@ jobs:
 
     - name: Generate checksums
       run: |
-        cd artifacts/AntiBitch-JDK21
+        cd artifacts/AntiBitch-JDK25
         sha256sum *.jar > SHA256SUMS.txt
 
     - name: Create Release
@@ -78,8 +78,8 @@ jobs:
       if: startsWith(github.ref, 'refs/tags/')
       with:
         files: |
-          artifacts/AntiBitch-JDK21/*.jar
-          artifacts/AntiBitch-JDK21/SHA256SUMS.txt
+          artifacts/AntiBitch-JDK25/*.jar
+          artifacts/AntiBitch-JDK25/SHA256SUMS.txt
         draft: false
         prerelease: false
       env:
