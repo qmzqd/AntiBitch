@@ -683,5 +683,6 @@ fastegg:
 
 # 插件设置
 settings:
+  enabled: true
   debug-mode: false
   broadcast-alerts: true

@@ -54,6 +54,7 @@ import io.papermc.paper.command.brigadier.Commands;
 import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
 
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -414,6 +415,12 @@ public class AntiBitch extends JavaPlugin implements Listener {
     private final Map<UUID, Integer> commandSpamViolations = new ConcurrentHashMap<>();
     private final Map<UUID, Long> lastEggTime = new ConcurrentHashMap<>();
     private final Map<UUID, Integer> fastEggViolations = new ConcurrentHashMap<>();
+
+    // 玩家单独开关：
+    //   全局开时 disabledPlayers 中的玩家被显式禁用
+    //   全局关时 enabledPlayers 中的玩家被显式启用
+    private final Set<UUID> disabledPlayers = ConcurrentHashMap.newKeySet();
+    private final Set<UUID> enabledPlayers = ConcurrentHashMap.newKeySet();
 
     // 配置参数
     private int maxReachViolations;
@@ -798,6 +805,8 @@ public class AntiBitch extends JavaPlugin implements Listener {
         lastChatTime.clear(); chatSpamViolations.clear();
         lastCommandTime.clear(); commandSpamViolations.clear();
         lastEggTime.clear(); fastEggViolations.clear();
+        disabledPlayers.clear();
+        enabledPlayers.clear();
         getLogger().info("AntiBitch 插件已禁用！");
     }
 
@@ -1000,6 +1009,28 @@ public class AntiBitch extends JavaPlugin implements Listener {
     }
 
     /**
+     * 检查插件全局开关是否启用
+     *
+     * @return 全局启用时返回 true
+     */
+    private boolean isGloballyEnabled() {
+        return getConfig().getBoolean("settings.enabled", true);
+    }
+
+    /**
+     * 检查指定玩家是否应进行检测。
+     * 全局开时默认所有玩家检测，disabledPlayers 中的玩家被显式禁用；
+     * 全局关时默认所有玩家不检测，enabledPlayers 中的玩家被显式启用。
+     *
+     * @param player 待检测的玩家
+     * @return 该玩家应被检测时返回 true
+     */
+    private boolean isDetectionEnabled(Player player) {
+        UUID id = player.getUniqueId();
+        return isGloballyEnabled() ? !disabledPlayers.contains(id) : enabledPlayers.contains(id);
+    }
+
+    /**
      * 处理玩家退出事件，清理内存中的玩家数据
      *
      * @param event 玩家退出事件
@@ -1135,6 +1166,7 @@ public class AntiBitch extends JavaPlugin implements Listener {
         Player player = (Player) event.getDamager();
         Entity target = event.getEntity();
         UUID playerId = player.getUniqueId();
+        if (!isDetectionEnabled(player)) return;
         double distance = player.getLocation().distance(target.getLocation());
 
         // Aimbot 检测（娱乐性质：检测头部转动速度异常）
@@ -1461,6 +1493,7 @@ public class AntiBitch extends JavaPlugin implements Listener {
 
         Player player = event.getPlayer();
         UUID playerId = player.getUniqueId();
+        if (!isDetectionEnabled(player)) return;
 
         if (player.isFlying() || player.isOnGround()) {
             moveTimes.remove(playerId);
@@ -1568,6 +1601,7 @@ public class AntiBitch extends JavaPlugin implements Listener {
 
         Player player = (Player) event.getEntity();
         UUID playerId = player.getUniqueId();
+        if (!isDetectionEnabled(player)) return;
 
         // NoFall 检测
         if (getConfig().getBoolean("nofall.enabled", true) && event.getCause() == EntityDamageEvent.DamageCause.FALL) {
@@ -1595,6 +1629,7 @@ public class AntiBitch extends JavaPlugin implements Listener {
 
         Player player = (Player) event.getEntity();
         UUID playerId = player.getUniqueId();
+        if (!isDetectionEnabled(player)) return;
 
         // Regen 检测
         if (getConfig().getBoolean("regen.enabled", true)) {
@@ -1625,6 +1660,7 @@ public class AntiBitch extends JavaPlugin implements Listener {
     public void onPlayerInteract(PlayerInteractEvent event) {
         Player player = event.getPlayer();
         UUID playerId = player.getUniqueId();
+        if (!isDetectionEnabled(player)) return;
         ItemStack item = event.getItem();
 
         // FastBow 检测
@@ -1758,6 +1794,7 @@ public class AntiBitch extends JavaPlugin implements Listener {
     public void onBlockPlace(BlockPlaceEvent event) {
         Player player = event.getPlayer();
         UUID playerId = player.getUniqueId();
+        if (!isDetectionEnabled(player)) return;
         long now = System.currentTimeMillis();
 
         // Scaffold 检测
@@ -1841,6 +1878,7 @@ public class AntiBitch extends JavaPlugin implements Listener {
     public void onPlayerItemHeld(PlayerItemHeldEvent event) {
         Player player = event.getPlayer();
         UUID playerId = player.getUniqueId();
+        if (!isDetectionEnabled(player)) return;
 
         // AutoTool 检测
         if (getConfig().getBoolean("autotool.enabled", true)) {
@@ -1889,6 +1927,7 @@ public class AntiBitch extends JavaPlugin implements Listener {
 
         Player player = (Player) event.getWhoClicked();
         UUID playerId = player.getUniqueId();
+        if (!isDetectionEnabled(player)) return;
 
         // InventoryCleaner 检测
         if (getConfig().getBoolean("inventorycleaner.enabled", true)) {
@@ -1990,6 +2029,7 @@ public class AntiBitch extends JavaPlugin implements Listener {
     public void onPlayerToggleSneak(PlayerToggleSneakEvent event) {
         Player player = event.getPlayer();
         UUID playerId = player.getUniqueId();
+        if (!isDetectionEnabled(player)) return;
 
         // Sneak 检测
         if (getConfig().getBoolean("sneak.enabled", true)) {
@@ -2045,6 +2085,7 @@ public class AntiBitch extends JavaPlugin implements Listener {
         if (!(event.getPlayer() instanceof Player)) return;
         Player player = event.getPlayer();
         UUID playerId = player.getUniqueId();
+        if (!isDetectionEnabled(player)) return;
 
         if (getConfig().getBoolean("autofish.enabled", true)) {
             // 降级方案：用 getCaught() 判断成功捕获（跨版本稳定，不依赖 getState() 枚举）
@@ -2083,6 +2124,7 @@ public class AntiBitch extends JavaPlugin implements Listener {
     public void onBlockBreak(BlockBreakEvent event) {
         Player player = event.getPlayer();
         UUID playerId = player.getUniqueId();
+        if (!isDetectionEnabled(player)) return;
         long now = System.currentTimeMillis();
 
         // Nuker 检测（娱乐性质：1 秒窗口内破坏方块数）
@@ -2213,6 +2255,7 @@ public class AntiBitch extends JavaPlugin implements Listener {
     public void onPlayerItemConsume(PlayerItemConsumeEvent event) {
         Player player = event.getPlayer();
         UUID playerId = player.getUniqueId();
+        if (!isDetectionEnabled(player)) return;
         long now = System.currentTimeMillis();
         ItemStack item = event.getItem();
 
@@ -2313,6 +2356,7 @@ public class AntiBitch extends JavaPlugin implements Listener {
 
         Player player = event.getPlayer();
         UUID playerId = player.getUniqueId();
+        if (!isDetectionEnabled(player)) return;
         long now = System.currentTimeMillis();
 
         if (player.isFlying()) {
@@ -2728,6 +2772,7 @@ public class AntiBitch extends JavaPlugin implements Listener {
     public void onPlayerVelocity(PlayerVelocityEvent event) {
         Player player = event.getPlayer();
         UUID playerId = player.getUniqueId();
+        if (!isDetectionEnabled(player)) return;
 
         if (getConfig().getBoolean("antiknockback.enabled", true)) {
             org.bukkit.util.Vector vel = event.getVelocity();
@@ -2782,6 +2827,7 @@ public class AntiBitch extends JavaPlugin implements Listener {
 
         Player player = (Player) passenger;
         UUID playerId = player.getUniqueId();
+        if (!isDetectionEnabled(player)) return;
 
         if (getConfig().getBoolean("boatfly.enabled", true)) {
             // 船在空中（下方非液体/非固体）即视为滞空
@@ -2817,6 +2863,7 @@ public class AntiBitch extends JavaPlugin implements Listener {
     public void onPlayerDropItem(PlayerDropItemEvent event) {
         Player player = event.getPlayer();
         UUID playerId = player.getUniqueId();
+        if (!isDetectionEnabled(player)) return;
         if (getConfig().getBoolean("fastdrop.enabled", true)) {
             long now = System.currentTimeMillis();
             long last = lastDropTime.getOrDefault(playerId, now - minDropInterval);
@@ -2840,6 +2887,7 @@ public class AntiBitch extends JavaPlugin implements Listener {
         if (!(event.getEntity() instanceof Player)) return;
         Player player = (Player) event.getEntity();
         UUID playerId = player.getUniqueId();
+        if (!isDetectionEnabled(player)) return;
         if (getConfig().getBoolean("fastpickup.enabled", true)) {
             long now = System.currentTimeMillis();
             long last = lastPickupTime.getOrDefault(playerId, now - minPickupInterval);
@@ -2863,6 +2911,7 @@ public class AntiBitch extends JavaPlugin implements Listener {
         if (!(event.getEntity().getShooter() instanceof Player)) return;
         Player player = (Player) event.getEntity().getShooter();
         UUID playerId = player.getUniqueId();
+        if (!isDetectionEnabled(player)) return;
         if (getConfig().getBoolean("fastprojectile.enabled", true)) {
             long now = System.currentTimeMillis();
             long last = lastProjectileTime.getOrDefault(playerId, now - minProjectileInterval);
@@ -2885,6 +2934,7 @@ public class AntiBitch extends JavaPlugin implements Listener {
     public void onPlayerToggleSprint(PlayerToggleSprintEvent event) {
         Player player = event.getPlayer();
         UUID playerId = player.getUniqueId();
+        if (!isDetectionEnabled(player)) return;
         if (getConfig().getBoolean("sprintspam.enabled", true)) {
             long now = System.currentTimeMillis();
             long last = lastSprintToggleTime.getOrDefault(playerId, now - minSprintToggleInterval);
@@ -2907,6 +2957,7 @@ public class AntiBitch extends JavaPlugin implements Listener {
     public void onPlayerToggleFlight(PlayerToggleFlightEvent event) {
         Player player = event.getPlayer();
         UUID playerId = player.getUniqueId();
+        if (!isDetectionEnabled(player)) return;
         if (getConfig().getBoolean("flightspam.enabled", true)) {
             long now = System.currentTimeMillis();
             long last = lastFlightToggleTime.getOrDefault(playerId, now - minFlightToggleInterval);
@@ -2930,6 +2981,7 @@ public class AntiBitch extends JavaPlugin implements Listener {
         if (!(event.getEntity() instanceof Player)) return;
         Player player = (Player) event.getEntity();
         UUID playerId = player.getUniqueId();
+        if (!isDetectionEnabled(player)) return;
         if (getConfig().getBoolean("glidespam.enabled", true)) {
             long now = System.currentTimeMillis();
             long last = lastGlideToggleTime.getOrDefault(playerId, now - minGlideToggleInterval);
@@ -2953,6 +3005,7 @@ public class AntiBitch extends JavaPlugin implements Listener {
         if (!(event.getEntity() instanceof Player)) return;
         Player player = (Player) event.getEntity();
         UUID playerId = player.getUniqueId();
+        if (!isDetectionEnabled(player)) return;
         if (getConfig().getBoolean("swimspam.enabled", true)) {
             long now = System.currentTimeMillis();
             long last = lastSwimToggleTime.getOrDefault(playerId, now - minSwimToggleInterval);
@@ -2975,6 +3028,7 @@ public class AntiBitch extends JavaPlugin implements Listener {
     public void onPlayerSwapHandItems(PlayerSwapHandItemsEvent event) {
         Player player = event.getPlayer();
         UUID playerId = player.getUniqueId();
+        if (!isDetectionEnabled(player)) return;
         if (getConfig().getBoolean("swapspam.enabled", true)) {
             long now = System.currentTimeMillis();
             long last = lastSwapTime.getOrDefault(playerId, now - minSwapInterval);
@@ -2998,6 +3052,7 @@ public class AntiBitch extends JavaPlugin implements Listener {
         if (!(event.getEntity() instanceof Player)) return;
         Player player = (Player) event.getEntity();
         UUID playerId = player.getUniqueId();
+        if (!isDetectionEnabled(player)) return;
         if (getConfig().getBoolean("nohunger.enabled", true)) {
             // 如果饥饿值本应下降但保持满值
             if (event.getFoodLevel() >= 20 && player.getFoodLevel() < 20) {
@@ -3018,6 +3073,7 @@ public class AntiBitch extends JavaPlugin implements Listener {
     public void onPlayerShearEntity(PlayerShearEntityEvent event) {
         Player player = event.getPlayer();
         UUID playerId = player.getUniqueId();
+        if (!isDetectionEnabled(player)) return;
         if (getConfig().getBoolean("fastshear.enabled", true)) {
             long now = System.currentTimeMillis();
             long last = lastShearTime.getOrDefault(playerId, now - minShearInterval);
@@ -3040,6 +3096,7 @@ public class AntiBitch extends JavaPlugin implements Listener {
     public void onPlayerBucketEmpty(PlayerBucketEmptyEvent event) {
         Player player = event.getPlayer();
         UUID playerId = player.getUniqueId();
+        if (!isDetectionEnabled(player)) return;
         if (getConfig().getBoolean("fastbucketempty.enabled", true)) {
             long now = System.currentTimeMillis();
             long last = lastBucketEmptyTime.getOrDefault(playerId, now - minBucketEmptyInterval);
@@ -3062,6 +3119,7 @@ public class AntiBitch extends JavaPlugin implements Listener {
     public void onPlayerBucketFill(PlayerBucketFillEvent event) {
         Player player = event.getPlayer();
         UUID playerId = player.getUniqueId();
+        if (!isDetectionEnabled(player)) return;
         if (getConfig().getBoolean("fastbucketfill.enabled", true)) {
             long now = System.currentTimeMillis();
             long last = lastBucketFillTime.getOrDefault(playerId, now - minBucketFillInterval);
@@ -3084,6 +3142,7 @@ public class AntiBitch extends JavaPlugin implements Listener {
     public void onPlayerBedEnter(PlayerBedEnterEvent event) {
         Player player = event.getPlayer();
         UUID playerId = player.getUniqueId();
+        if (!isDetectionEnabled(player)) return;
         if (getConfig().getBoolean("bedspam.enabled", true)) {
             long now = System.currentTimeMillis();
             long last = lastBedTime.getOrDefault(playerId, now - minBedInterval);
@@ -3107,6 +3166,7 @@ public class AntiBitch extends JavaPlugin implements Listener {
         if (!(event.getEntity() instanceof Player)) return;
         Player player = (Player) event.getEntity();
         UUID playerId = player.getUniqueId();
+        if (!isDetectionEnabled(player)) return;
         if (getConfig().getBoolean("autototem.enabled", true)) {
             long now = System.currentTimeMillis();
             long last = lastTotemTime.getOrDefault(playerId, now - minTotemInterval);
@@ -3129,6 +3189,7 @@ public class AntiBitch extends JavaPlugin implements Listener {
     public void onPlayerExpChange(PlayerExpChangeEvent event) {
         Player player = event.getPlayer();
         UUID playerId = player.getUniqueId();
+        if (!isDetectionEnabled(player)) return;
         if (getConfig().getBoolean("fastexp.enabled", true)) {
             long now = System.currentTimeMillis();
             long last = lastExpTime.getOrDefault(playerId, now - minExpInterval);
@@ -3151,6 +3212,7 @@ public class AntiBitch extends JavaPlugin implements Listener {
     public void onAsyncPlayerChat(AsyncPlayerChatEvent event) {
         Player player = event.getPlayer();
         UUID playerId = player.getUniqueId();
+        if (!isDetectionEnabled(player)) return;
         if (getConfig().getBoolean("chatspam.enabled", true)) {
             long now = System.currentTimeMillis();
             long last = lastChatTime.getOrDefault(playerId, now - minChatInterval);
@@ -3174,6 +3236,7 @@ public class AntiBitch extends JavaPlugin implements Listener {
     public void onPlayerCommandPreprocess(PlayerCommandPreprocessEvent event) {
         Player player = event.getPlayer();
         UUID playerId = player.getUniqueId();
+        if (!isDetectionEnabled(player)) return;
         if (getConfig().getBoolean("commandspam.enabled", true)) {
             long now = System.currentTimeMillis();
             long last = lastCommandTime.getOrDefault(playerId, now - minCommandInterval);
@@ -3196,6 +3259,7 @@ public class AntiBitch extends JavaPlugin implements Listener {
     public void onPlayerEggThrow(PlayerEggThrowEvent event) {
         Player player = event.getPlayer();
         UUID playerId = player.getUniqueId();
+        if (!isDetectionEnabled(player)) return;
         if (getConfig().getBoolean("fastegg.enabled", true)) {
             long now = System.currentTimeMillis();
             long last = lastEggTime.getOrDefault(playerId, now - minEggInterval);
@@ -3226,6 +3290,10 @@ public class AntiBitch extends JavaPlugin implements Listener {
                     sender.sendMessage(ChatColor.YELLOW + "/antibitch reload - 重载配置文件");
                     sender.sendMessage(ChatColor.YELLOW + "/antibitch status - 查看插件状态");
                     sender.sendMessage(ChatColor.YELLOW + "/antibitch version - 查看插件版本");
+                    sender.sendMessage(ChatColor.YELLOW + "/antibitch on - 启用全局检测");
+                    sender.sendMessage(ChatColor.YELLOW + "/antibitch off - 禁用全局检测");
+                    sender.sendMessage(ChatColor.YELLOW + "/antibitch toggle <player> - 切换玩家检测开关");
+                    sender.sendMessage(ChatColor.YELLOW + "/antibitch list - 查看开关状态");
                     return 1;
                 })
                 .then(Commands.literal("reload")
@@ -3348,6 +3416,89 @@ public class AntiBitch extends JavaPlugin implements Listener {
                         .executes(ctx -> {
                             CommandSender sender = ctx.getSource().getSender();
                             sender.sendMessage(ChatColor.GOLD + "AntiBitch v" + getDescription().getVersion());
+                            return 1;
+                        }))
+                .then(Commands.literal("on")
+                        .executes(ctx -> {
+                            CommandSender sender = ctx.getSource().getSender();
+                            getConfig().set("settings.enabled", true);
+                            saveConfig();
+                            sender.sendMessage(ChatColor.GREEN + "AntiBitch 全局检测已启用");
+                            getLogger().info(sender.getName() + " 启用了全局检测");
+                            return 1;
+                        }))
+                .then(Commands.literal("off")
+                        .executes(ctx -> {
+                            CommandSender sender = ctx.getSource().getSender();
+                            getConfig().set("settings.enabled", false);
+                            saveConfig();
+                            sender.sendMessage(ChatColor.RED + "AntiBitch 全局检测已禁用");
+                            getLogger().info(sender.getName() + " 禁用了全局检测");
+                            return 1;
+                        }))
+                .then(Commands.literal("toggle")
+                        .then(Commands.argument("player", com.mojang.brigadier.arguments.StringArgumentType.word())
+                                .executes(ctx -> {
+                                    CommandSender sender = ctx.getSource().getSender();
+                                    String name = com.mojang.brigadier.arguments.StringArgumentType.getString(ctx, "player");
+                                    Player target = Bukkit.getPlayerExact(name);
+                                    if (target == null) {
+                                        sender.sendMessage(ChatColor.RED + "找不到玩家: " + name);
+                                        return 0;
+                                    }
+                                    UUID tid = target.getUniqueId();
+                                    if (isGloballyEnabled()) {
+                                        // 全局开：在 disabledPlayers 黑名单中切换
+                                        if (disabledPlayers.contains(tid)) {
+                                            disabledPlayers.remove(tid);
+                                            sender.sendMessage(ChatColor.GREEN + "已为 " + target.getName() + " 启用检测");
+                                            getLogger().info(sender.getName() + " 为 " + target.getName() + " 启用了检测");
+                                        } else {
+                                            disabledPlayers.add(tid);
+                                            sender.sendMessage(ChatColor.YELLOW + "已为 " + target.getName() + " 禁用检测");
+                                            getLogger().info(sender.getName() + " 为 " + target.getName() + " 禁用了检测");
+                                        }
+                                    } else {
+                                        // 全局关：在 enabledPlayers 白名单中切换
+                                        if (enabledPlayers.contains(tid)) {
+                                            enabledPlayers.remove(tid);
+                                            sender.sendMessage(ChatColor.YELLOW + "已为 " + target.getName() + " 禁用检测");
+                                            getLogger().info(sender.getName() + " 为 " + target.getName() + " 禁用了检测");
+                                        } else {
+                                            enabledPlayers.add(tid);
+                                            sender.sendMessage(ChatColor.GREEN + "已为 " + target.getName() + " 启用检测");
+                                            getLogger().info(sender.getName() + " 为 " + target.getName() + " 启用了检测");
+                                        }
+                                    }
+                                    return 1;
+                                })))
+                .then(Commands.literal("list")
+                        .executes(ctx -> {
+                            CommandSender sender = ctx.getSource().getSender();
+                            sender.sendMessage(ChatColor.YELLOW + "全局检测: " + (isGloballyEnabled() ? ChatColor.GREEN + "启用" : ChatColor.RED + "禁用"));
+                            if (isGloballyEnabled()) {
+                                if (disabledPlayers.isEmpty()) {
+                                    sender.sendMessage(ChatColor.YELLOW + "当前没有玩家被单独禁用检测");
+                                } else {
+                                    sender.sendMessage(ChatColor.GOLD + "=== 检测已禁用的玩家 ===");
+                                    for (UUID id : disabledPlayers) {
+                                        Player p = Bukkit.getPlayer(id);
+                                        String name = p != null ? p.getName() : id.toString();
+                                        sender.sendMessage(ChatColor.YELLOW + "- " + name);
+                                    }
+                                }
+                            } else {
+                                if (enabledPlayers.isEmpty()) {
+                                    sender.sendMessage(ChatColor.YELLOW + "当前没有玩家被单独启用检测");
+                                } else {
+                                    sender.sendMessage(ChatColor.GOLD + "=== 检测已启用的玩家 ===");
+                                    for (UUID id : enabledPlayers) {
+                                        Player p = Bukkit.getPlayer(id);
+                                        String name = p != null ? p.getName() : id.toString();
+                                        sender.sendMessage(ChatColor.YELLOW + "- " + name);
+                                    }
+                                }
+                            }
                             return 1;
                         }))
                 .build();

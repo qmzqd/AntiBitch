@@ -48,7 +48,17 @@ Minecraft Paper 26.2 反作弊插件，Java 25，Maven 构建。单文件实现�
 
 ## 命令 API
 
-插件使用 Paper 1.20.5+ 的新 Brigadier 命令 API（`io.papermc.paper.command.brigadier`），通过 `getLifecycleManager().registerEventHandler(LifecycleEvents.COMMANDS, ...)` 注册 `/antibitch`（别名 `ab`、`ac`）。三个子命令 reload/status/version 作为 literal 子节点，权限检查用 `.requires(ctx -> ...)`。**不要**用旧的 `onCommand` + `paper-plugin.yml` commands 声明方式——`paper-plugin.yml` 已移除 `commands:` 块，只保留 `permissions:`。新 API 在 1.21.11 和 26.2 两个 profile 间签名一致，同一份源码可共用。
+插件使用 Paper 1.20.5+ 的新 Brigadier 命令 API（`io.papermc.paper.command.brigadier`），通过 `getLifecycleManager().registerEventHandler(LifecycleEvents.COMMANDS, ...)` 注册 `/antibitch`（别名 `ab`、`ac`）。子命令 reload/status/version/on/off/toggle/list 作为 literal 子节点，权限检查用 `.requires(ctx -> ...)`。`toggle` 带一个 `StringArgumentType.word()` 玩家名参数。**不要**用旧的 `onCommand` + `paper-plugin.yml` commands 声明方式——`paper-plugin.yml` 已移除 `commands:` 块，只保留 `permissions:`。新 API 在 1.21.11 和 26.2 两个 profile 间签名一致，同一份源码可共用。
+
+## 全局/玩家开关
+
+- **全局开关**：`config.yml` 的 `settings.enabled`（默认 `true`）。`/antibitch on`/`off` 修改并保存。`isGloballyEnabled()` 读取。
+- **玩家单独开关**（双向覆盖）：
+  - 全局**开**时，`disabledPlayers`（黑名单）中的玩家被显式禁用，其余玩家检测。
+  - 全局**关**时，`enabledPlayers`（白名单）中的玩家被显式启用，其余玩家不检测。
+  - `/antibitch toggle <player>` 按当前全局状态在对应名单中切换该玩家。`/antibitch list` 查看全局状态与对应名单。
+  - 两个集合都是 `ConcurrentHashMap.newKeySet()`，玩家退出不清除（持久至插件禁用）。
+- **统一入口**：每个 `@EventHandler` 检测处理器在提取 `playerId` 后调用 `isDetectionEnabled(player)` 早退。`onPlayerQuit`（清理）和 `onPlayerAnimation`（仅记录挥动时间）不做此检查。
 
 ## CI / 发布
 
