@@ -1,7 +1,7 @@
 name: AntiBitch
 version: '${project.version}'
 main: nb114514.antibitch.AntiBitch
-api-version: '26.2'
+api-version: '${mc.api-version}'
 description: '一个用于 Minecraft Paper 服务器的反作弊插件'
 author: qmzqd
 website: https://github.com/qmzqd/AntiBitch

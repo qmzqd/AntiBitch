@@ -13,18 +13,21 @@
 
     <properties>
         <java.version>25</java.version>
+        <paperapi.version>26.2.build.24-alpha</paperapi.version>
+        <mc.api-version>26.2</mc.api-version>
+        <build.classifier>26.2</build.classifier>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
     <build>
+        <finalName>${project.artifactId}-${project.version}-${build.classifier}</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.13.0</version>
                 <configuration>
-                    <source>${java.version}</source>
-                    <target>${java.version}</target>
+                    <release>${java.version}</release>
                 </configuration>
             </plugin>
             <plugin>
@@ -52,6 +55,29 @@
         </resources>
     </build>
 
+    <profiles>
+        <!-- 默认（无 profile 或 -P 26.2）：Minecraft 26.2 / Java 25 -->
+        <profile>
+            <id>26.2</id>
+            <properties>
+                <java.version>25</java.version>
+                <paperapi.version>26.2.build.24-alpha</paperapi.version>
+                <mc.api-version>26.2</mc.api-version>
+                <build.classifier>26.2</build.classifier>
+            </properties>
+        </profile>
+        <!-- -P 1.21.11：Minecraft 1.21.11 / Java 21，产出兼容老版本运行时的 jar -->
+        <profile>
+            <id>1.21.11</id>
+            <properties>
+                <java.version>21</java.version>
+                <paperapi.version>1.21.11-R0.1-SNAPSHOT</paperapi.version>
+                <mc.api-version>1.21.11</mc.api-version>
+                <build.classifier>1.21.11</build.classifier>
+            </properties>
+        </profile>
+    </profiles>
+
     <repositories>
         <repository>
             <id>papermc-repo</id>
@@ -67,7 +93,7 @@
         <dependency>
             <groupId>io.papermc.paper</groupId>
             <artifactId>paper-api</artifactId>
-            <version>26.2.build.24-alpha</version>
+            <version>${paperapi.version}</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>

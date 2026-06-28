@@ -1,5 +1,5 @@
 # AntiBitch CI/CD Pipeline
-# 使用 Maven 构建 Java 项目，支持依赖缓存和构建产物上传
+# 使用 Maven 构建 Java 项目，矩阵构建两个 Minecraft 版本产物并上传
 
 name: Build
 
@@ -12,41 +12,38 @@ on:
 
 jobs:
   build:
-    name: Build on JDK ${{ matrix.java }}
+    name: Build ${{ matrix.profile }}
     runs-on: ubuntu-latest
 
     strategy:
       matrix:
-        java: [ '25' ]
+        profile: [ '26.2', '1.21.11' ]
 
     steps:
     - name: Checkout code
       uses: actions/checkout@v5
 
-    - name: Set up JDK ${{ matrix.java }}
+    - name: Set up JDK 25
       uses: actions/setup-java@v5
       with:
-        java-version: ${{ matrix.java }}
+        java-version: '25'
         distribution: 'temurin'
         cache: maven
 
     - name: Verify Maven configuration
       run: mvn -v
 
-    - name: Clean and compile
-      run: mvn clean compile
+    - name: Build with Maven (${{ matrix.profile }})
+      run: mvn -B clean package -P ${{ matrix.profile }} --file pom.xml
 
     - name: Run tests (if any)
-      run: mvn test
+      run: mvn test -P ${{ matrix.profile }}
       continue-on-error: true
-
-    - name: Build with Maven
-      run: mvn -B package --file pom.xml
 
     - name: Upload build artifacts
       uses: actions/upload-artifact@v5
       with:
-        name: AntiBitch-JDK${{ matrix.java }}
+        name: AntiBitch-${{ matrix.profile }}
         path: target/AntiBitch-*.jar
         retention-days: 7
 
@@ -68,9 +65,11 @@ jobs:
     - name: Display structure of downloaded files
       run: ls -R artifacts
 
-    - name: Generate checksums
+    - name: Collect jars and generate checksums
       run: |
-        cd artifacts/AntiBitch-JDK25
+        mkdir -p release
+        find artifacts -name '*.jar' -exec cp {} release/ \;
+        cd release
         sha256sum *.jar > SHA256SUMS.txt
 
     - name: Create Release
@@ -78,8 +77,8 @@ jobs:
       if: startsWith(github.ref, 'refs/tags/')
       with:
         files: |
-          artifacts/AntiBitch-JDK25/*.jar
-          artifacts/AntiBitch-JDK25/SHA256SUMS.txt
+          release/*.jar
+          release/SHA256SUMS.txt
         draft: false
         prerelease: false
       env:
