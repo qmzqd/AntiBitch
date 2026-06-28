@@ -46,6 +46,10 @@ Minecraft Paper 26.2 反作弊插件，Java 25，Maven 构建。单文件实现�
 
 源码注释明确：检测逻辑为"娱乐性质，可能存在误报"。不要以"提升检测准确度"为由自行加强判定阈值或加新检测，除非用户要求。
 
+## 命令 API
+
+插件使用 Paper 1.20.5+ 的新 Brigadier 命令 API（`io.papermc.paper.command.brigadier`），通过 `getLifecycleManager().registerEventHandler(LifecycleEvents.COMMANDS, ...)` 注册 `/antibitch`（别名 `ab`、`ac`）。三个子命令 reload/status/version 作为 literal 子节点，权限检查用 `.requires(ctx -> ...)`。**不要**用旧的 `onCommand` + `paper-plugin.yml` commands 声明方式——`paper-plugin.yml` 已移除 `commands:` 块，只保留 `permissions:`。新 API 在 1.21.11 和 26.2 两个 profile 间签名一致，同一份源码可共用。
+
 ## CI / 发布
 
 `.github/workflows/maven.yml`：`main` 和 `develop` 分支 push / PR 触发 JDK 25 矩阵构建（`26.2` 与 `1.21.11` 两个 profile），各上传一个 jar 产物。GitHub Release **仅在推送 tag 时**创建，包含两个 jar。注意 release job 的 `if: github.ref == 'refs/heads/main'` 与内部 `if: startsWith(github.ref, 'refs/tags/')` 同时存在——只有打 tag 才会真正发布。

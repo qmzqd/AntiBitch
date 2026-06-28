@@ -2,7 +2,6 @@ package nb114514.antibitch;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.Material;
@@ -48,6 +47,11 @@ import org.bukkit.event.player.PlayerVelocityEvent;
 import org.bukkit.event.vehicle.VehicleMoveEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.tree.LiteralCommandNode;
+import io.papermc.paper.command.brigadier.Commands;
+import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
 
 import java.util.Map;
 import java.util.UUID;
@@ -668,8 +672,12 @@ public class AntiBitch extends JavaPlugin implements Listener {
         // 注册事件监听器
         Bukkit.getServer().getPluginManager().registerEvents(this, this);
 
-        // 注册命令
-        this.getCommand("antibitch").setExecutor(this);
+        // 注册命令（Paper 1.20.5+ 新 Brigadier 命令 API）
+        getLifecycleManager().registerEventHandler(LifecycleEvents.COMMANDS, event -> {
+            Commands commands = event.registrar();
+            LiteralCommandNode<io.papermc.paper.command.brigadier.CommandSourceStack> node = buildAntiBitchCommand();
+            commands.register(node, java.util.List.of("ab", "ac"));
+        });
 
         getLogger().info("AntiBitch 插件已启用！");
     }
@@ -3204,147 +3212,144 @@ public class AntiBitch extends JavaPlugin implements Listener {
     }
 
     /**
-     * 处理插件命令
+     * 构建 /antibitch Brigadier 命令树（Paper 1.20.5+ 新命令 API）。
+     * 子节点：reload、status、version；均要求 antibitch.admin 权限。
      *
-     * @param sender 命令发送者
-     * @param command 命令对象
-     * @param label 命令标签
-     * @param args 命令参数
-     * @return 命令是否处理成功
+     * @return 命令树的根节点
      */
-    @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (!sender.hasPermission("antibitch.admin")) {
-            sender.sendMessage(ChatColor.RED + "你没有权限使用此命令！");
-            return true;
-        }
-
-        if (args.length == 0) {
-            sender.sendMessage(ChatColor.GOLD + "=== AntiBitch 插件管理 ===");
-            sender.sendMessage(ChatColor.YELLOW + "/antibitch reload - 重载配置文件");
-            sender.sendMessage(ChatColor.YELLOW + "/antibitch status - 查看插件状态");
-            sender.sendMessage(ChatColor.YELLOW + "/antibitch version - 查看插件版本");
-            return true;
-        }
-
-        switch (args[0].toLowerCase()) {
-            case "reload":
-                reloadConfig();
-                loadConfigValues();
-                sender.sendMessage(ChatColor.GREEN + "配置文件已重载！");
-                getLogger().info(sender.getName() + " 重载了配置文件");
-                break;
-            case "status":
-                sender.sendMessage(ChatColor.GOLD + "=== AntiBitch 状态 ===");
-                sender.sendMessage(ChatColor.YELLOW + "版本: " + getDescription().getVersion());
-                sender.sendMessage(ChatColor.YELLOW + "Reach 检测: " + (getConfig().getBoolean("reach.enabled") ? "启用" : "禁用"));
-                sender.sendMessage(ChatColor.YELLOW + "Speed 检测: " + (getConfig().getBoolean("speed.enabled") ? "启用" : "禁用"));
-                sender.sendMessage(ChatColor.YELLOW + "Fly 检测: " + (getConfig().getBoolean("fly.enabled") ? "启用" : "禁用"));
-                sender.sendMessage(ChatColor.YELLOW + "AutoClicker 检测: " + (getConfig().getBoolean("autoclicker.enabled") ? "启用" : "禁用"));
-                sender.sendMessage(ChatColor.YELLOW + "KillAura 检测: " + (getConfig().getBoolean("killaura.enabled") ? "启用" : "禁用"));
-                sender.sendMessage(ChatColor.YELLOW + "NoFall 检测: " + (getConfig().getBoolean("nofall.enabled") ? "启用" : "禁用"));
-                sender.sendMessage(ChatColor.YELLOW + "Criticals 检测: " + (getConfig().getBoolean("criticals.enabled") ? "启用" : "禁用"));
-                sender.sendMessage(ChatColor.YELLOW + "Timer 检测: " + (getConfig().getBoolean("timer.enabled") ? "启用" : "禁用"));
-                sender.sendMessage(ChatColor.YELLOW + "NoSlow 检测: " + (getConfig().getBoolean("noslow.enabled") ? "启用" : "禁用"));
-                sender.sendMessage(ChatColor.YELLOW + "Sprint 检测: " + (getConfig().getBoolean("sprint.enabled") ? "启用" : "禁用"));
-                sender.sendMessage(ChatColor.YELLOW + "Aimbot 检测: " + (getConfig().getBoolean("aimbot.enabled") ? "启用" : "禁用"));
-                sender.sendMessage(ChatColor.YELLOW + "FastBow 检测: " + (getConfig().getBoolean("fastbow.enabled") ? "启用" : "禁用"));
-                sender.sendMessage(ChatColor.YELLOW + "Regen 检测: " + (getConfig().getBoolean("regen.enabled") ? "启用" : "禁用"));
-                sender.sendMessage(ChatColor.YELLOW + "Scaffold 检测: " + (getConfig().getBoolean("scaffold.enabled") ? "启用" : "禁用"));
-                sender.sendMessage(ChatColor.YELLOW + "AutoTool 检测: " + (getConfig().getBoolean("autotool.enabled") ? "启用" : "禁用"));
-                sender.sendMessage(ChatColor.YELLOW + "AutoSoup 检测: " + (getConfig().getBoolean("autosoup.enabled") ? "启用" : "禁用"));
-                sender.sendMessage(ChatColor.YELLOW + "InventoryCleaner 检测: " + (getConfig().getBoolean("inventorycleaner.enabled") ? "启用" : "禁用"));
-                sender.sendMessage(ChatColor.YELLOW + "Sneak 检测: " + (getConfig().getBoolean("sneak.enabled") ? "启用" : "禁用"));
-                sender.sendMessage(ChatColor.YELLOW + "Hitbox 检测: " + (getConfig().getBoolean("hitbox.enabled") ? "启用" : "禁用"));
-                sender.sendMessage(ChatColor.YELLOW + "Nuker 检测: " + (getConfig().getBoolean("nuker.enabled") ? "启用" : "禁用"));
-                sender.sendMessage(ChatColor.YELLOW + "FastBreak 检测: " + (getConfig().getBoolean("fastbreak.enabled") ? "启用" : "禁用"));
-                sender.sendMessage(ChatColor.YELLOW + "FastEat 检测: " + (getConfig().getBoolean("fasteat.enabled") ? "启用" : "禁用"));
-                sender.sendMessage(ChatColor.YELLOW + "WaterWalk 检测: " + (getConfig().getBoolean("waterwalk.enabled") ? "启用" : "禁用"));
-                sender.sendMessage(ChatColor.YELLOW + "Glide 检测: " + (getConfig().getBoolean("glide.enabled") ? "启用" : "禁用"));
-                sender.sendMessage(ChatColor.YELLOW + "Step 检测: " + (getConfig().getBoolean("step.enabled") ? "启用" : "禁用"));
-                sender.sendMessage(ChatColor.YELLOW + "AntiKnockback 检测: " + (getConfig().getBoolean("antiknockback.enabled") ? "启用" : "禁用"));
-                sender.sendMessage(ChatColor.YELLOW + "NoSwing 检测: " + (getConfig().getBoolean("noswing.enabled") ? "启用" : "禁用"));
-                sender.sendMessage(ChatColor.YELLOW + "Spider 检测: " + (getConfig().getBoolean("spider.enabled") ? "启用" : "禁用"));
-                sender.sendMessage(ChatColor.YELLOW + "NoWeb 检测: " + (getConfig().getBoolean("noweb.enabled") ? "启用" : "禁用"));
-                sender.sendMessage(ChatColor.YELLOW + "FastLadder 检测: " + (getConfig().getBoolean("fastladder.enabled") ? "启用" : "禁用"));
-                sender.sendMessage(ChatColor.YELLOW + "BoatFly 检测: " + (getConfig().getBoolean("boatfly.enabled") ? "启用" : "禁用"));
-                sender.sendMessage(ChatColor.YELLOW + "HighJump 检测: " + (getConfig().getBoolean("highjump.enabled") ? "启用" : "禁用"));
-                sender.sendMessage(ChatColor.YELLOW + "Dolphin 检测: " + (getConfig().getBoolean("dolphin.enabled") ? "启用" : "禁用"));
-                sender.sendMessage(ChatColor.YELLOW + "Phase 检测: " + (getConfig().getBoolean("phase.enabled") ? "启用" : "禁用"));
-                sender.sendMessage(ChatColor.YELLOW + "Blink 检测: " + (getConfig().getBoolean("blink.enabled") ? "启用" : "禁用"));
-                sender.sendMessage(ChatColor.YELLOW + "FastSneak 检测: " + (getConfig().getBoolean("fastsneak.enabled") ? "启用" : "禁用"));
-                sender.sendMessage(ChatColor.YELLOW + "Derp 检测: " + (getConfig().getBoolean("derp.enabled") ? "启用" : "禁用"));
-                sender.sendMessage(ChatColor.YELLOW + "ElytraSpeed 检测: " + (getConfig().getBoolean("elytraspeed.enabled") ? "启用" : "禁用"));
-                sender.sendMessage(ChatColor.YELLOW + "XRay 检测: " + (getConfig().getBoolean("xray.enabled") ? "启用" : "禁用"));
-                sender.sendMessage(ChatColor.YELLOW + "Tower 检测: " + (getConfig().getBoolean("tower.enabled") ? "启用" : "禁用"));
-                sender.sendMessage(ChatColor.YELLOW + "ChestStealer 检测: " + (getConfig().getBoolean("cheststealer.enabled") ? "启用" : "禁用"));
-                sender.sendMessage(ChatColor.YELLOW + "AutoArmor 检测: " + (getConfig().getBoolean("autoarmor.enabled") ? "启用" : "禁用"));
-                sender.sendMessage(ChatColor.YELLOW + "AutoFish 检测: " + (getConfig().getBoolean("autofish.enabled") ? "启用" : "禁用"));
-                sender.sendMessage(ChatColor.YELLOW + "FastSprint 检测: " + (getConfig().getBoolean("fastsprint.enabled") ? "启用" : "禁用"));
-                sender.sendMessage(ChatColor.YELLOW + "IceSpeed 检测: " + (getConfig().getBoolean("icespeed.enabled") ? "启用" : "禁用"));
-                sender.sendMessage(ChatColor.YELLOW + "Bhop 检测: " + (getConfig().getBoolean("bhop.enabled") ? "启用" : "禁用"));
-                sender.sendMessage(ChatColor.YELLOW + "AirJump 检测: " + (getConfig().getBoolean("airjump.enabled") ? "启用" : "禁用"));
-                sender.sendMessage(ChatColor.YELLOW + "Jetpack 检测: " + (getConfig().getBoolean("jetpack.enabled") ? "启用" : "禁用"));
-                sender.sendMessage(ChatColor.YELLOW + "FastClimbVine 检测: " + (getConfig().getBoolean("fastclimbvine.enabled") ? "启用" : "禁用"));
-                sender.sendMessage(ChatColor.YELLOW + "FastDescend 检测: " + (getConfig().getBoolean("fastdescend.enabled") ? "启用" : "禁用"));
-                sender.sendMessage(ChatColor.YELLOW + "Strafe 检测: " + (getConfig().getBoolean("strafe.enabled") ? "启用" : "禁用"));
-                sender.sendMessage(ChatColor.YELLOW + "Float 检测: " + (getConfig().getBoolean("float.enabled") ? "启用" : "禁用"));
-                sender.sendMessage(ChatColor.YELLOW + "FastSneakAir 检测: " + (getConfig().getBoolean("fastsneakair.enabled") ? "启用" : "禁用"));
-                sender.sendMessage(ChatColor.YELLOW + "HeadRoll 检测: " + (getConfig().getBoolean("headroll.enabled") ? "启用" : "禁用"));
-                sender.sendMessage(ChatColor.YELLOW + "TeleportUp 检测: " + (getConfig().getBoolean("teleportup.enabled") ? "启用" : "禁用"));
-                sender.sendMessage(ChatColor.YELLOW + "ReachVertical 检测: " + (getConfig().getBoolean("reachvertical.enabled") ? "启用" : "禁用"));
-                sender.sendMessage(ChatColor.YELLOW + "AttackThroughWall 检测: " + (getConfig().getBoolean("attackthroughwall.enabled") ? "启用" : "禁用"));
-                sender.sendMessage(ChatColor.YELLOW + "CriticalFake 检测: " + (getConfig().getBoolean("criticalfake.enabled") ? "启用" : "禁用"));
-                sender.sendMessage(ChatColor.YELLOW + "TriggerBot 检测: " + (getConfig().getBoolean("triggerbot.enabled") ? "启用" : "禁用"));
-                sender.sendMessage(ChatColor.YELLOW + "NoCooldown 检测: " + (getConfig().getBoolean("nocooldown.enabled") ? "启用" : "禁用"));
-                sender.sendMessage(ChatColor.YELLOW + "MultiAttack 检测: " + (getConfig().getBoolean("multiattack.enabled") ? "启用" : "禁用"));
-                sender.sendMessage(ChatColor.YELLOW + "SnapAim 检测: " + (getConfig().getBoolean("snapaim.enabled") ? "启用" : "禁用"));
-                sender.sendMessage(ChatColor.YELLOW + "AttackWhileSprinting 检测: " + (getConfig().getBoolean("attackwhilesprinting.enabled") ? "启用" : "禁用"));
-                sender.sendMessage(ChatColor.YELLOW + "FastInteract 检测: " + (getConfig().getBoolean("fastinteract.enabled") ? "启用" : "禁用"));
-                sender.sendMessage(ChatColor.YELLOW + "FastDoor 检测: " + (getConfig().getBoolean("fastdoor.enabled") ? "启用" : "禁用"));
-                sender.sendMessage(ChatColor.YELLOW + "FastFenceGate 检测: " + (getConfig().getBoolean("fastfencegate.enabled") ? "启用" : "禁用"));
-                sender.sendMessage(ChatColor.YELLOW + "FastLever 检测: " + (getConfig().getBoolean("fastlever.enabled") ? "启用" : "禁用"));
-                sender.sendMessage(ChatColor.YELLOW + "FastButton 检测: " + (getConfig().getBoolean("fastbutton.enabled") ? "启用" : "禁用"));
-                sender.sendMessage(ChatColor.YELLOW + "FastTrapdoor 检测: " + (getConfig().getBoolean("fasttrapdoor.enabled") ? "启用" : "禁用"));
-                sender.sendMessage(ChatColor.YELLOW + "AutoPot 检测: " + (getConfig().getBoolean("autopot.enabled") ? "启用" : "禁用"));
-                sender.sendMessage(ChatColor.YELLOW + "FastBucket 检测: " + (getConfig().getBoolean("fastbucket.enabled") ? "启用" : "禁用"));
-                sender.sendMessage(ChatColor.YELLOW + "FastPotion 检测: " + (getConfig().getBoolean("fastpotion.enabled") ? "启用" : "禁用"));
-                sender.sendMessage(ChatColor.YELLOW + "FastMilk 检测: " + (getConfig().getBoolean("fastmilk.enabled") ? "启用" : "禁用"));
-                sender.sendMessage(ChatColor.YELLOW + "FastHoney 检测: " + (getConfig().getBoolean("fasthoney.enabled") ? "启用" : "禁用"));
-                sender.sendMessage(ChatColor.YELLOW + "BreakReach 检测: " + (getConfig().getBoolean("breakreach.enabled") ? "启用" : "禁用"));
-                sender.sendMessage(ChatColor.YELLOW + "FastOre 检测: " + (getConfig().getBoolean("fastore.enabled") ? "启用" : "禁用"));
-                sender.sendMessage(ChatColor.YELLOW + "BreakWhileMoving 检测: " + (getConfig().getBoolean("breakwhilemoving.enabled") ? "启用" : "禁用"));
-                sender.sendMessage(ChatColor.YELLOW + "PlaceReach 检测: " + (getConfig().getBoolean("placereach.enabled") ? "启用" : "禁用"));
-                sender.sendMessage(ChatColor.YELLOW + "FastPlace 检测: " + (getConfig().getBoolean("fastplace.enabled") ? "启用" : "禁用"));
-                sender.sendMessage(ChatColor.YELLOW + "FastShiftClick 检测: " + (getConfig().getBoolean("fastshiftclick.enabled") ? "启用" : "禁用"));
-                sender.sendMessage(ChatColor.YELLOW + "FastHotbarSwap 检测: " + (getConfig().getBoolean("fasthotbarswap.enabled") ? "启用" : "禁用"));
-                sender.sendMessage(ChatColor.YELLOW + "SneakSpam 检测: " + (getConfig().getBoolean("sneakspam.enabled") ? "启用" : "禁用"));
-                sender.sendMessage(ChatColor.YELLOW + "FastDrop 检测: " + (getConfig().getBoolean("fastdrop.enabled") ? "启用" : "禁用"));
-                sender.sendMessage(ChatColor.YELLOW + "FastPickup 检测: " + (getConfig().getBoolean("fastpickup.enabled") ? "启用" : "禁用"));
-                sender.sendMessage(ChatColor.YELLOW + "FastProjectile 检测: " + (getConfig().getBoolean("fastprojectile.enabled") ? "启用" : "禁用"));
-                sender.sendMessage(ChatColor.YELLOW + "SprintSpam 检测: " + (getConfig().getBoolean("sprintspam.enabled") ? "启用" : "禁用"));
-                sender.sendMessage(ChatColor.YELLOW + "FlightSpam 检测: " + (getConfig().getBoolean("flightspam.enabled") ? "启用" : "禁用"));
-                sender.sendMessage(ChatColor.YELLOW + "GlideSpam 检测: " + (getConfig().getBoolean("glidespam.enabled") ? "启用" : "禁用"));
-                sender.sendMessage(ChatColor.YELLOW + "SwimSpam 检测: " + (getConfig().getBoolean("swimspam.enabled") ? "启用" : "禁用"));
-                sender.sendMessage(ChatColor.YELLOW + "SwapSpam 检测: " + (getConfig().getBoolean("swapspam.enabled") ? "启用" : "禁用"));
-                sender.sendMessage(ChatColor.YELLOW + "NoHunger 检测: " + (getConfig().getBoolean("nohunger.enabled") ? "启用" : "禁用"));
-                sender.sendMessage(ChatColor.YELLOW + "FastShear 检测: " + (getConfig().getBoolean("fastshear.enabled") ? "启用" : "禁用"));
-                sender.sendMessage(ChatColor.YELLOW + "FastBucketEmpty 检测: " + (getConfig().getBoolean("fastbucketempty.enabled") ? "启用" : "禁用"));
-                sender.sendMessage(ChatColor.YELLOW + "FastBucketFill 检测: " + (getConfig().getBoolean("fastbucketfill.enabled") ? "启用" : "禁用"));
-                sender.sendMessage(ChatColor.YELLOW + "BedSpam 检测: " + (getConfig().getBoolean("bedspam.enabled") ? "启用" : "禁用"));
-                sender.sendMessage(ChatColor.YELLOW + "AutoTotem 检测: " + (getConfig().getBoolean("autototem.enabled") ? "启用" : "禁用"));
-                sender.sendMessage(ChatColor.YELLOW + "FastExp 检测: " + (getConfig().getBoolean("fastexp.enabled") ? "启用" : "禁用"));
-                sender.sendMessage(ChatColor.YELLOW + "ChatSpam 检测: " + (getConfig().getBoolean("chatspam.enabled") ? "启用" : "禁用"));
-                sender.sendMessage(ChatColor.YELLOW + "CommandSpam 检测: " + (getConfig().getBoolean("commandspam.enabled") ? "启用" : "禁用"));
-                sender.sendMessage(ChatColor.YELLOW + "FastEgg 检测: " + (getConfig().getBoolean("fastegg.enabled") ? "启用" : "禁用"));
-                break;
-            case "version":
-                sender.sendMessage(ChatColor.GOLD + "AntiBitch v" + getDescription().getVersion());
-                break;
-            default:
-                sender.sendMessage(ChatColor.RED + "未知命令！使用 /antibitch 查看帮助");
-        }
-
-        return true;
+    private LiteralCommandNode<io.papermc.paper.command.brigadier.CommandSourceStack> buildAntiBitchCommand() {
+        return Commands.literal("antibitch")
+                .requires(ctx -> ctx.getSender().hasPermission("antibitch.admin"))
+                .executes(ctx -> {
+                    CommandSender sender = ctx.getSource().getSender();
+                    sender.sendMessage(ChatColor.GOLD + "=== AntiBitch 插件管理 ===");
+                    sender.sendMessage(ChatColor.YELLOW + "/antibitch reload - 重载配置文件");
+                    sender.sendMessage(ChatColor.YELLOW + "/antibitch status - 查看插件状态");
+                    sender.sendMessage(ChatColor.YELLOW + "/antibitch version - 查看插件版本");
+                    return 1;
+                })
+                .then(Commands.literal("reload")
+                        .executes(ctx -> {
+                            CommandSender sender = ctx.getSource().getSender();
+                            reloadConfig();
+                            loadConfigValues();
+                            sender.sendMessage(ChatColor.GREEN + "配置文件已重载！");
+                            getLogger().info(sender.getName() + " 重载了配置文件");
+                            return 1;
+                        }))
+                .then(Commands.literal("status")
+                        .executes(ctx -> {
+                            CommandSender sender = ctx.getSource().getSender();
+                            sender.sendMessage(ChatColor.GOLD + "=== AntiBitch 状态 ===");
+                            sender.sendMessage(ChatColor.YELLOW + "版本: " + getDescription().getVersion());
+                            sender.sendMessage(ChatColor.YELLOW + "Reach 检测: " + (getConfig().getBoolean("reach.enabled") ? "启用" : "禁用"));
+                            sender.sendMessage(ChatColor.YELLOW + "Speed 检测: " + (getConfig().getBoolean("speed.enabled") ? "启用" : "禁用"));
+                            sender.sendMessage(ChatColor.YELLOW + "Fly 检测: " + (getConfig().getBoolean("fly.enabled") ? "启用" : "禁用"));
+                            sender.sendMessage(ChatColor.YELLOW + "AutoClicker 检测: " + (getConfig().getBoolean("autoclicker.enabled") ? "启用" : "禁用"));
+                            sender.sendMessage(ChatColor.YELLOW + "KillAura 检测: " + (getConfig().getBoolean("killaura.enabled") ? "启用" : "禁用"));
+                            sender.sendMessage(ChatColor.YELLOW + "NoFall 检测: " + (getConfig().getBoolean("nofall.enabled") ? "启用" : "禁用"));
+                            sender.sendMessage(ChatColor.YELLOW + "Criticals 检测: " + (getConfig().getBoolean("criticals.enabled") ? "启用" : "禁用"));
+                            sender.sendMessage(ChatColor.YELLOW + "Timer 检测: " + (getConfig().getBoolean("timer.enabled") ? "启用" : "禁用"));
+                            sender.sendMessage(ChatColor.YELLOW + "NoSlow 检测: " + (getConfig().getBoolean("noslow.enabled") ? "启用" : "禁用"));
+                            sender.sendMessage(ChatColor.YELLOW + "Sprint 检测: " + (getConfig().getBoolean("sprint.enabled") ? "启用" : "禁用"));
+                            sender.sendMessage(ChatColor.YELLOW + "Aimbot 检测: " + (getConfig().getBoolean("aimbot.enabled") ? "启用" : "禁用"));
+                            sender.sendMessage(ChatColor.YELLOW + "FastBow 检测: " + (getConfig().getBoolean("fastbow.enabled") ? "启用" : "禁用"));
+                            sender.sendMessage(ChatColor.YELLOW + "Regen 检测: " + (getConfig().getBoolean("regen.enabled") ? "启用" : "禁用"));
+                            sender.sendMessage(ChatColor.YELLOW + "Scaffold 检测: " + (getConfig().getBoolean("scaffold.enabled") ? "启用" : "禁用"));
+                            sender.sendMessage(ChatColor.YELLOW + "AutoTool 检测: " + (getConfig().getBoolean("autotool.enabled") ? "启用" : "禁用"));
+                            sender.sendMessage(ChatColor.YELLOW + "AutoSoup 检测: " + (getConfig().getBoolean("autosoup.enabled") ? "启用" : "禁用"));
+                            sender.sendMessage(ChatColor.YELLOW + "InventoryCleaner 检测: " + (getConfig().getBoolean("inventorycleaner.enabled") ? "启用" : "禁用"));
+                            sender.sendMessage(ChatColor.YELLOW + "Sneak 检测: " + (getConfig().getBoolean("sneak.enabled") ? "启用" : "禁用"));
+                            sender.sendMessage(ChatColor.YELLOW + "Hitbox 检测: " + (getConfig().getBoolean("hitbox.enabled") ? "启用" : "禁用"));
+                            sender.sendMessage(ChatColor.YELLOW + "Nuker 检测: " + (getConfig().getBoolean("nuker.enabled") ? "启用" : "禁用"));
+                            sender.sendMessage(ChatColor.YELLOW + "FastBreak 检测: " + (getConfig().getBoolean("fastbreak.enabled") ? "启用" : "禁用"));
+                            sender.sendMessage(ChatColor.YELLOW + "FastEat 检测: " + (getConfig().getBoolean("fasteat.enabled") ? "启用" : "禁用"));
+                            sender.sendMessage(ChatColor.YELLOW + "WaterWalk 检测: " + (getConfig().getBoolean("waterwalk.enabled") ? "启用" : "禁用"));
+                            sender.sendMessage(ChatColor.YELLOW + "Glide 检测: " + (getConfig().getBoolean("glide.enabled") ? "启用" : "禁用"));
+                            sender.sendMessage(ChatColor.YELLOW + "Step 检测: " + (getConfig().getBoolean("step.enabled") ? "启用" : "禁用"));
+                            sender.sendMessage(ChatColor.YELLOW + "AntiKnockback 检测: " + (getConfig().getBoolean("antiknockback.enabled") ? "启用" : "禁用"));
+                            sender.sendMessage(ChatColor.YELLOW + "NoSwing 检测: " + (getConfig().getBoolean("noswing.enabled") ? "启用" : "禁用"));
+                            sender.sendMessage(ChatColor.YELLOW + "Spider 检测: " + (getConfig().getBoolean("spider.enabled") ? "启用" : "禁用"));
+                            sender.sendMessage(ChatColor.YELLOW + "NoWeb 检测: " + (getConfig().getBoolean("noweb.enabled") ? "启用" : "禁用"));
+                            sender.sendMessage(ChatColor.YELLOW + "FastLadder 检测: " + (getConfig().getBoolean("fastladder.enabled") ? "启用" : "禁用"));
+                            sender.sendMessage(ChatColor.YELLOW + "BoatFly 检测: " + (getConfig().getBoolean("boatfly.enabled") ? "启用" : "禁用"));
+                            sender.sendMessage(ChatColor.YELLOW + "HighJump 检测: " + (getConfig().getBoolean("highjump.enabled") ? "启用" : "禁用"));
+                            sender.sendMessage(ChatColor.YELLOW + "Dolphin 检测: " + (getConfig().getBoolean("dolphin.enabled") ? "启用" : "禁用"));
+                            sender.sendMessage(ChatColor.YELLOW + "Phase 检测: " + (getConfig().getBoolean("phase.enabled") ? "启用" : "禁用"));
+                            sender.sendMessage(ChatColor.YELLOW + "Blink 检测: " + (getConfig().getBoolean("blink.enabled") ? "启用" : "禁用"));
+                            sender.sendMessage(ChatColor.YELLOW + "FastSneak 检测: " + (getConfig().getBoolean("fastsneak.enabled") ? "启用" : "禁用"));
+                            sender.sendMessage(ChatColor.YELLOW + "Derp 检测: " + (getConfig().getBoolean("derp.enabled") ? "启用" : "禁用"));
+                            sender.sendMessage(ChatColor.YELLOW + "ElytraSpeed 检测: " + (getConfig().getBoolean("elytraspeed.enabled") ? "启用" : "禁用"));
+                            sender.sendMessage(ChatColor.YELLOW + "XRay 检测: " + (getConfig().getBoolean("xray.enabled") ? "启用" : "禁用"));
+                            sender.sendMessage(ChatColor.YELLOW + "Tower 检测: " + (getConfig().getBoolean("tower.enabled") ? "启用" : "禁用"));
+                            sender.sendMessage(ChatColor.YELLOW + "ChestStealer 检测: " + (getConfig().getBoolean("cheststealer.enabled") ? "启用" : "禁用"));
+                            sender.sendMessage(ChatColor.YELLOW + "AutoArmor 检测: " + (getConfig().getBoolean("autoarmor.enabled") ? "启用" : "禁用"));
+                            sender.sendMessage(ChatColor.YELLOW + "AutoFish 检测: " + (getConfig().getBoolean("autofish.enabled") ? "启用" : "禁用"));
+                            sender.sendMessage(ChatColor.YELLOW + "FastSprint 检测: " + (getConfig().getBoolean("fastsprint.enabled") ? "启用" : "禁用"));
+                            sender.sendMessage(ChatColor.YELLOW + "IceSpeed 检测: " + (getConfig().getBoolean("icespeed.enabled") ? "启用" : "禁用"));
+                            sender.sendMessage(ChatColor.YELLOW + "Bhop 检测: " + (getConfig().getBoolean("bhop.enabled") ? "启用" : "禁用"));
+                            sender.sendMessage(ChatColor.YELLOW + "AirJump 检测: " + (getConfig().getBoolean("airjump.enabled") ? "启用" : "禁用"));
+                            sender.sendMessage(ChatColor.YELLOW + "Jetpack 检测: " + (getConfig().getBoolean("jetpack.enabled") ? "启用" : "禁用"));
+                            sender.sendMessage(ChatColor.YELLOW + "FastClimbVine 检测: " + (getConfig().getBoolean("fastclimbvine.enabled") ? "启用" : "禁用"));
+                            sender.sendMessage(ChatColor.YELLOW + "FastDescend 检测: " + (getConfig().getBoolean("fastdescend.enabled") ? "启用" : "禁用"));
+                            sender.sendMessage(ChatColor.YELLOW + "Strafe 检测: " + (getConfig().getBoolean("strafe.enabled") ? "启用" : "禁用"));
+                            sender.sendMessage(ChatColor.YELLOW + "Float 检测: " + (getConfig().getBoolean("float.enabled") ? "启用" : "禁用"));
+                            sender.sendMessage(ChatColor.YELLOW + "FastSneakAir 检测: " + (getConfig().getBoolean("fastsneakair.enabled") ? "启用" : "禁用"));
+                            sender.sendMessage(ChatColor.YELLOW + "HeadRoll 检测: " + (getConfig().getBoolean("headroll.enabled") ? "启用" : "禁用"));
+                            sender.sendMessage(ChatColor.YELLOW + "TeleportUp 检测: " + (getConfig().getBoolean("teleportup.enabled") ? "启用" : "禁用"));
+                            sender.sendMessage(ChatColor.YELLOW + "ReachVertical 检测: " + (getConfig().getBoolean("reachvertical.enabled") ? "启用" : "禁用"));
+                            sender.sendMessage(ChatColor.YELLOW + "AttackThroughWall 检测: " + (getConfig().getBoolean("attackthroughwall.enabled") ? "启用" : "禁用"));
+                            sender.sendMessage(ChatColor.YELLOW + "CriticalFake 检测: " + (getConfig().getBoolean("criticalfake.enabled") ? "启用" : "禁用"));
+                            sender.sendMessage(ChatColor.YELLOW + "TriggerBot 检测: " + (getConfig().getBoolean("triggerbot.enabled") ? "启用" : "禁用"));
+                            sender.sendMessage(ChatColor.YELLOW + "NoCooldown 检测: " + (getConfig().getBoolean("nocooldown.enabled") ? "启用" : "禁用"));
+                            sender.sendMessage(ChatColor.YELLOW + "MultiAttack 检测: " + (getConfig().getBoolean("multiattack.enabled") ? "启用" : "禁用"));
+                            sender.sendMessage(ChatColor.YELLOW + "SnapAim 检测: " + (getConfig().getBoolean("snapaim.enabled") ? "启用" : "禁用"));
+                            sender.sendMessage(ChatColor.YELLOW + "AttackWhileSprinting 检测: " + (getConfig().getBoolean("attackwhilesprinting.enabled") ? "启用" : "禁用"));
+                            sender.sendMessage(ChatColor.YELLOW + "FastInteract 检测: " + (getConfig().getBoolean("fastinteract.enabled") ? "启用" : "禁用"));
+                            sender.sendMessage(ChatColor.YELLOW + "FastDoor 检测: " + (getConfig().getBoolean("fastdoor.enabled") ? "启用" : "禁用"));
+                            sender.sendMessage(ChatColor.YELLOW + "FastFenceGate 检测: " + (getConfig().getBoolean("fastfencegate.enabled") ? "启用" : "禁用"));
+                            sender.sendMessage(ChatColor.YELLOW + "FastLever 检测: " + (getConfig().getBoolean("fastlever.enabled") ? "启用" : "禁用"));
+                            sender.sendMessage(ChatColor.YELLOW + "FastButton 检测: " + (getConfig().getBoolean("fastbutton.enabled") ? "启用" : "禁用"));
+                            sender.sendMessage(ChatColor.YELLOW + "FastTrapdoor 检测: " + (getConfig().getBoolean("fasttrapdoor.enabled") ? "启用" : "禁用"));
+                            sender.sendMessage(ChatColor.YELLOW + "AutoPot 检测: " + (getConfig().getBoolean("autopot.enabled") ? "启用" : "禁用"));
+                            sender.sendMessage(ChatColor.YELLOW + "FastBucket 检测: " + (getConfig().getBoolean("fastbucket.enabled") ? "启用" : "禁用"));
+                            sender.sendMessage(ChatColor.YELLOW + "FastPotion 检测: " + (getConfig().getBoolean("fastpotion.enabled") ? "启用" : "禁用"));
+                            sender.sendMessage(ChatColor.YELLOW + "FastMilk 检测: " + (getConfig().getBoolean("fastmilk.enabled") ? "启用" : "禁用"));
+                            sender.sendMessage(ChatColor.YELLOW + "FastHoney 检测: " + (getConfig().getBoolean("fasthoney.enabled") ? "启用" : "禁用"));
+                            sender.sendMessage(ChatColor.YELLOW + "BreakReach 检测: " + (getConfig().getBoolean("breakreach.enabled") ? "启用" : "禁用"));
+                            sender.sendMessage(ChatColor.YELLOW + "FastOre 检测: " + (getConfig().getBoolean("fastore.enabled") ? "启用" : "禁用"));
+                            sender.sendMessage(ChatColor.YELLOW + "BreakWhileMoving 检测: " + (getConfig().getBoolean("breakwhilemoving.enabled") ? "启用" : "禁用"));
+                            sender.sendMessage(ChatColor.YELLOW + "PlaceReach 检测: " + (getConfig().getBoolean("placereach.enabled") ? "启用" : "禁用"));
+                            sender.sendMessage(ChatColor.YELLOW + "FastPlace 检测: " + (getConfig().getBoolean("fastplace.enabled") ? "启用" : "禁用"));
+                            sender.sendMessage(ChatColor.YELLOW + "FastShiftClick 检测: " + (getConfig().getBoolean("fastshiftclick.enabled") ? "启用" : "禁用"));
+                            sender.sendMessage(ChatColor.YELLOW + "FastHotbarSwap 检测: " + (getConfig().getBoolean("fasthotbarswap.enabled") ? "启用" : "禁用"));
+                            sender.sendMessage(ChatColor.YELLOW + "SneakSpam 检测: " + (getConfig().getBoolean("sneakspam.enabled") ? "启用" : "禁用"));
+                            sender.sendMessage(ChatColor.YELLOW + "FastDrop 检测: " + (getConfig().getBoolean("fastdrop.enabled") ? "启用" : "禁用"));
+                            sender.sendMessage(ChatColor.YELLOW + "FastPickup 检测: " + (getConfig().getBoolean("fastpickup.enabled") ? "启用" : "禁用"));
+                            sender.sendMessage(ChatColor.YELLOW + "FastProjectile 检测: " + (getConfig().getBoolean("fastprojectile.enabled") ? "启用" : "禁用"));
+                            sender.sendMessage(ChatColor.YELLOW + "SprintSpam 检测: " + (getConfig().getBoolean("sprintspam.enabled") ? "启用" : "禁用"));
+                            sender.sendMessage(ChatColor.YELLOW + "FlightSpam 检测: " + (getConfig().getBoolean("flightspam.enabled") ? "启用" : "禁用"));
+                            sender.sendMessage(ChatColor.YELLOW + "GlideSpam 检测: " + (getConfig().getBoolean("glidespam.enabled") ? "启用" : "禁用"));
+                            sender.sendMessage(ChatColor.YELLOW + "SwimSpam 检测: " + (getConfig().getBoolean("swimspam.enabled") ? "启用" : "禁用"));
+                            sender.sendMessage(ChatColor.YELLOW + "SwapSpam 检测: " + (getConfig().getBoolean("swapspam.enabled") ? "启用" : "禁用"));
+                            sender.sendMessage(ChatColor.YELLOW + "NoHunger 检测: " + (getConfig().getBoolean("nohunger.enabled") ? "启用" : "禁用"));
+                            sender.sendMessage(ChatColor.YELLOW + "FastShear 检测: " + (getConfig().getBoolean("fastshear.enabled") ? "启用" : "禁用"));
+                            sender.sendMessage(ChatColor.YELLOW + "FastBucketEmpty 检测: " + (getConfig().getBoolean("fastbucketempty.enabled") ? "启用" : "禁用"));
+                            sender.sendMessage(ChatColor.YELLOW + "FastBucketFill 检测: " + (getConfig().getBoolean("fastbucketfill.enabled") ? "启用" : "禁用"));
+                            sender.sendMessage(ChatColor.YELLOW + "BedSpam 检测: " + (getConfig().getBoolean("bedspam.enabled") ? "启用" : "禁用"));
+                            sender.sendMessage(ChatColor.YELLOW + "AutoTotem 检测: " + (getConfig().getBoolean("autototem.enabled") ? "启用" : "禁用"));
+                            sender.sendMessage(ChatColor.YELLOW + "FastExp 检测: " + (getConfig().getBoolean("fastexp.enabled") ? "启用" : "禁用"));
+                            sender.sendMessage(ChatColor.YELLOW + "ChatSpam 检测: " + (getConfig().getBoolean("chatspam.enabled") ? "启用" : "禁用"));
+                            sender.sendMessage(ChatColor.YELLOW + "CommandSpam 检测: " + (getConfig().getBoolean("commandspam.enabled") ? "启用" : "禁用"));
+                            sender.sendMessage(ChatColor.YELLOW + "FastEgg 检测: " + (getConfig().getBoolean("fastegg.enabled") ? "启用" : "禁用"));
+                            return 1;
+                        }))
+                .then(Commands.literal("version")
+                        .executes(ctx -> {
+                            CommandSender sender = ctx.getSource().getSender();
+                            sender.sendMessage(ChatColor.GOLD + "AntiBitch v" + getDescription().getVersion());
+                            return 1;
+                        }))
+                .build();
     }
 }
