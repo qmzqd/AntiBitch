@@ -173,7 +173,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class AntiBitch extends JavaPlugin implements Listener {
     // 使用 ConcurrentHashMap 确保线程安全
-    private final Map<UUID, Integer> reachViolations = new ConcurrentHashMap<>();
+    private final Map<UUID, Integer> reachViolations = newViolationMap("reach");
     private final Map<UUID, Long> moveTimes = new ConcurrentHashMap<>();
     private final Map<UUID, Integer> moveCount = new ConcurrentHashMap<>();
 
@@ -193,39 +193,39 @@ public class AntiBitch extends JavaPlugin implements Listener {
 
     // Timer 检测数据
     private final Map<UUID, Long> lastMoveTime = new ConcurrentHashMap<>();
-    private final Map<UUID, Integer> timerViolations = new ConcurrentHashMap<>();
+    private final Map<UUID, Integer> timerViolations = newViolationMap("timer");
 
     // NoSlow 检测数据
     private final Map<UUID, Long> lastEatTime = new ConcurrentHashMap<>();
-    private final Map<UUID, Integer> noSlowViolations = new ConcurrentHashMap<>();
+    private final Map<UUID, Integer> noSlowViolations = newViolationMap("noSlow");
 
     // Sprint 检测数据
-    private final Map<UUID, Integer> sprintViolations = new ConcurrentHashMap<>();
+    private final Map<UUID, Integer> sprintViolations = newViolationMap("sprint");
 
     // Aimbot 检测数据
     private final Map<UUID, Float> lastYaw = new ConcurrentHashMap<>();
     private final Map<UUID, Float> lastPitch = new ConcurrentHashMap<>();
-    private final Map<UUID, Integer> aimbotViolations = new ConcurrentHashMap<>();
+    private final Map<UUID, Integer> aimbotViolations = newViolationMap("aimbot");
 
     // FastBow 检测数据
     private final Map<UUID, Long> bowPullTime = new ConcurrentHashMap<>();
-    private final Map<UUID, Integer> fastBowViolations = new ConcurrentHashMap<>();
+    private final Map<UUID, Integer> fastBowViolations = newViolationMap("fastBow");
 
     // Regen 检测数据
     private final Map<UUID, Long> lastHealTime = new ConcurrentHashMap<>();
-    private final Map<UUID, Integer> regenViolations = new ConcurrentHashMap<>();
+    private final Map<UUID, Integer> regenViolations = newViolationMap("regen");
 
     // Scaffold 检测数据
     private final Map<UUID, Long> lastPlaceTime = new ConcurrentHashMap<>();
-    private final Map<UUID, Integer> scaffoldViolations = new ConcurrentHashMap<>();
+    private final Map<UUID, Integer> scaffoldViolations = newViolationMap("scaffold");
 
     // AutoTool 检测数据
     private final Map<UUID, Long> lastToolSwitchTime = new ConcurrentHashMap<>();
-    private final Map<UUID, Integer> autoToolViolations = new ConcurrentHashMap<>();
+    private final Map<UUID, Integer> autoToolViolations = newViolationMap("autoTool");
 
     // AutoSoup 检测数据
     private final Map<UUID, Long> lastConsumeTime = new ConcurrentHashMap<>();
-    private final Map<UUID, Integer> autoSoupViolations = new ConcurrentHashMap<>();
+    private final Map<UUID, Integer> autoSoupViolations = newViolationMap("autoSoup");
 
     // InventoryCleaner 检测数据
     private final Map<UUID, Long> lastInventoryClickTime = new ConcurrentHashMap<>();
@@ -233,194 +233,195 @@ public class AntiBitch extends JavaPlugin implements Listener {
 
     // Sneak 检测数据
     private final Map<UUID, Long> sneakStartTime = new ConcurrentHashMap<>();
-    private final Map<UUID, Integer> sneakViolations = new ConcurrentHashMap<>();
+    private final Map<UUID, Integer> sneakViolations = newViolationMap("sneak");
 
     // Hitbox 检测数据
-    private final Map<UUID, Integer> hitboxViolations = new ConcurrentHashMap<>();
+    private final Map<UUID, Integer> hitboxViolations = newViolationMap("hitbox");
 
     // Nuker / FastBreak 检测数据（共用 BlockBreakEvent handler）
     private final Map<UUID, Long> lastBlockBreakTime = new ConcurrentHashMap<>();
     private final Map<UUID, Integer> blockBreakCount = new ConcurrentHashMap<>();
-    private final Map<UUID, Integer> nukerViolations = new ConcurrentHashMap<>();
-    private final Map<UUID, Integer> fastBreakViolations = new ConcurrentHashMap<>();
+    private final Map<UUID, Integer> nukerViolations = newViolationMap("nuker");
+    private final Map<UUID, Integer> fastBreakViolations = newViolationMap("fastBreak");
 
     // FastEat 检测数据
     private final Map<UUID, Long> lastEatConsumeTime = new ConcurrentHashMap<>();
-    private final Map<UUID, Integer> fastEatViolations = new ConcurrentHashMap<>();
+    private final Map<UUID, Integer> fastEatViolations = newViolationMap("fastEat");
 
     // WaterWalk / Glide / Step / Spider / NoWeb / FastLadder 检测数据（共用 PlayerMoveEvent handler）
-    private final Map<UUID, Integer> waterWalkViolations = new ConcurrentHashMap<>();
-    private final Map<UUID, Integer> glideViolations = new ConcurrentHashMap<>();
-    private final Map<UUID, Integer> stepViolations = new ConcurrentHashMap<>();
-    private final Map<UUID, Integer> spiderViolations = new ConcurrentHashMap<>();
-    private final Map<UUID, Integer> noWebViolations = new ConcurrentHashMap<>();
-    private final Map<UUID, Integer> fastLadderViolations = new ConcurrentHashMap<>();
+    private final Map<UUID, Integer> waterWalkViolations = newViolationMap("waterWalk");
+    private final Map<UUID, Integer> glideViolations = newViolationMap("glide");
+    private final Map<UUID, Integer> stepViolations = newViolationMap("step");
+    private final Map<UUID, Integer> spiderViolations = newViolationMap("spider");
+    private final Map<UUID, Integer> noWebViolations = newViolationMap("noWeb");
+    private final Map<UUID, Integer> fastLadderViolations = newViolationMap("fastLadder");
 
     // AntiKnockback 检测数据
-    private final Map<UUID, Integer> antiKnockbackViolations = new ConcurrentHashMap<>();
+    private final Map<UUID, Integer> antiKnockbackViolations = newViolationMap("antiKnockback");
 
     // NoSwing 检测数据
     private final Map<UUID, Long> lastSwingTime = new ConcurrentHashMap<>();
-    private final Map<UUID, Integer> noSwingViolations = new ConcurrentHashMap<>();
+    private final Map<UUID, Integer> noSwingViolations = newViolationMap("noSwing");
 
     // BoatFly 检测数据
     private final Map<UUID, Integer> boatAirMoves = new ConcurrentHashMap<>();
-    private final Map<UUID, Integer> boatFlyViolations = new ConcurrentHashMap<>();
+    private final Map<UUID, Integer> boatFlyViolations = newViolationMap("boatFly");
 
     // HighJump / Dolphin / Phase / Blink / FastSneak / Derp / ElytraSpeed 检测数据（共用 onMoveChecks）
-    private final Map<UUID, Integer> highJumpViolations = new ConcurrentHashMap<>();
-    private final Map<UUID, Integer> dolphinViolations = new ConcurrentHashMap<>();
-    private final Map<UUID, Integer> phaseViolations = new ConcurrentHashMap<>();
-    private final Map<UUID, Integer> blinkViolations = new ConcurrentHashMap<>();
-    private final Map<UUID, Integer> fastSneakViolations = new ConcurrentHashMap<>();
+    private final Map<UUID, Integer> highJumpViolations = newViolationMap("highJump");
+    private final Map<UUID, Integer> dolphinViolations = newViolationMap("dolphin");
+    private final Map<UUID, Integer> phaseViolations = newViolationMap("phase");
+    private final Map<UUID, Integer> blinkViolations = newViolationMap("blink");
+    private final Map<UUID, Integer> fastSneakViolations = newViolationMap("fastSneak");
     private final Map<UUID, Float> lastMoveYaw = new ConcurrentHashMap<>();
-    private final Map<UUID, Integer> derpViolations = new ConcurrentHashMap<>();
-    private final Map<UUID, Integer> elytraSpeedViolations = new ConcurrentHashMap<>();
+    private final Map<UUID, Integer> derpViolations = newViolationMap("derp");
+    private final Map<UUID, Integer> elytraSpeedViolations = newViolationMap("elytraSpeed");
 
     // XRay 检测数据
     private final Map<UUID, Long> lastOreTime = new ConcurrentHashMap<>();
     private final Map<UUID, Integer> oreCount = new ConcurrentHashMap<>();
-    private final Map<UUID, Integer> xrayViolations = new ConcurrentHashMap<>();
+    private final Map<UUID, Integer> xrayViolations = newViolationMap("xray");
 
     // Tower 检测数据
     private final Map<UUID, Long> lastTowerTime = new ConcurrentHashMap<>();
-    private final Map<UUID, Integer> towerViolations = new ConcurrentHashMap<>();
+    private final Map<UUID, Integer> towerViolations = newViolationMap("tower");
 
     // ChestStealer 检测数据（与 InventoryCleaner 独立）
     private final Map<UUID, Long> lastChestClickTime = new ConcurrentHashMap<>();
     private final Map<UUID, Integer> chestClickCount = new ConcurrentHashMap<>();
-    private final Map<UUID, Integer> chestStealerViolations = new ConcurrentHashMap<>();
+    private final Map<UUID, Integer> chestStealerViolations = newViolationMap("chestStealer");
 
     // AutoArmor 检测数据
     private final Map<UUID, Long> lastArmorEquipTime = new ConcurrentHashMap<>();
-    private final Map<UUID, Integer> autoArmorViolations = new ConcurrentHashMap<>();
+    private final Map<UUID, Integer> autoArmorViolations = newViolationMap("autoArmor");
 
     // AutoFish 检测数据
     private final Map<UUID, Long> lastFishTime = new ConcurrentHashMap<>();
     private final Map<UUID, Integer> fishCount = new ConcurrentHashMap<>();
-    private final Map<UUID, Integer> autoFishViolations = new ConcurrentHashMap<>();
+    private final Map<UUID, Integer> autoFishViolations = newViolationMap("autoFish");
 
     // === 第二批扩展检测数据 ===
     // Movement (onMoveChecks)
-    private final Map<UUID, Integer> fastSprintViolations = new ConcurrentHashMap<>();
-    private final Map<UUID, Integer> iceSpeedViolations = new ConcurrentHashMap<>();
-    private final Map<UUID, Integer> bhopViolations = new ConcurrentHashMap<>();
+    private final Map<UUID, Integer> fastSprintViolations = newViolationMap("fastSprint");
+    private final Map<UUID, Integer> iceSpeedViolations = newViolationMap("iceSpeed");
+    private final Map<UUID, Integer> bhopViolations = newViolationMap("bhop");
     private final Map<UUID, Long> lastGroundTime = new ConcurrentHashMap<>();
-    private final Map<UUID, Integer> airJumpViolations = new ConcurrentHashMap<>();
-    private final Map<UUID, Integer> jetpackViolations = new ConcurrentHashMap<>();
-    private final Map<UUID, Integer> fastClimbVineViolations = new ConcurrentHashMap<>();
-    private final Map<UUID, Integer> fastDescendViolations = new ConcurrentHashMap<>();
-    private final Map<UUID, Integer> strafeViolations = new ConcurrentHashMap<>();
-    private final Map<UUID, Integer> floatViolations = new ConcurrentHashMap<>();
-    private final Map<UUID, Integer> fastSneakAirViolations = new ConcurrentHashMap<>();
+    private final Map<UUID, Integer> airJumpViolations = newViolationMap("airJump");
+    private final Map<UUID, Integer> jetpackViolations = newViolationMap("jetpack");
+    private final Map<UUID, Integer> fastClimbVineViolations = newViolationMap("fastClimbVine");
+    private final Map<UUID, Integer> fastDescendViolations = newViolationMap("fastDescend");
+    private final Map<UUID, Integer> strafeViolations = newViolationMap("strafe");
+    private final Map<UUID, Integer> floatViolations = newViolationMap("float");
+    private final Map<UUID, Integer> fastSneakAirViolations = newViolationMap("fastSneakAir");
     private final Map<UUID, Float> lastMovePitch = new ConcurrentHashMap<>();
-    private final Map<UUID, Integer> headRollViolations = new ConcurrentHashMap<>();
-    private final Map<UUID, Integer> teleportUpViolations = new ConcurrentHashMap<>();
+    private final Map<UUID, Integer> headRollViolations = newViolationMap("headRoll");
+    private final Map<UUID, Integer> teleportUpViolations = newViolationMap("teleportUp");
 
     // Combat (onEntityDamageByEntity)
-    private final Map<UUID, Integer> reachVerticalViolations = new ConcurrentHashMap<>();
-    private final Map<UUID, Integer> attackThroughWallViolations = new ConcurrentHashMap<>();
-    private final Map<UUID, Integer> criticalFakeViolations = new ConcurrentHashMap<>();
+    private final Map<UUID, Integer> reachVerticalViolations = newViolationMap("reachVertical");
+    private final Map<UUID, Integer> attackThroughWallViolations = newViolationMap("attackThroughWall");
+    private final Map<UUID, Integer> criticalFakeViolations = newViolationMap("criticalFake");
     private final Map<UUID, Long> lastAttackEnd = new ConcurrentHashMap<>();
-    private final Map<UUID, Integer> triggerBotViolations = new ConcurrentHashMap<>();
+    private final Map<UUID, Integer> triggerBotViolations = newViolationMap("triggerBot");
     private final Map<UUID, Long> lastAttackStart = new ConcurrentHashMap<>();
-    private final Map<UUID, Integer> noCooldownViolations = new ConcurrentHashMap<>();
+    private final Map<UUID, Integer> noCooldownViolations = newViolationMap("noCooldown");
     private final Map<UUID, Long> lastMultiAttackTime = new ConcurrentHashMap<>();
     private final Map<UUID, Integer> multiAttackCount = new ConcurrentHashMap<>();
-    private final Map<UUID, Integer> multiAttackViolations = new ConcurrentHashMap<>();
+    private final Map<UUID, Integer> multiAttackViolations = newViolationMap("multiAttack");
     private final Map<UUID, Float> preAttackYaw = new ConcurrentHashMap<>();
-    private final Map<UUID, Integer> snapAimViolations = new ConcurrentHashMap<>();
-    private final Map<UUID, Integer> attackWhileSprintingViolations = new ConcurrentHashMap<>();
+    private final Map<UUID, Integer> snapAimViolations = newViolationMap("snapAim");
+    private final Map<UUID, Integer> attackWhileSprintingViolations = newViolationMap("attackWhileSprinting");
 
     // Interact (onPlayerInteract)
     private final Map<UUID, Long> lastInteractTime = new ConcurrentHashMap<>();
-    private final Map<UUID, Integer> fastInteractViolations = new ConcurrentHashMap<>();
+    private final Map<UUID, Integer> fastInteractViolations = newViolationMap("fastInteract");
     private final Map<UUID, Long> lastDoorTime = new ConcurrentHashMap<>();
-    private final Map<UUID, Integer> fastDoorViolations = new ConcurrentHashMap<>();
+    private final Map<UUID, Integer> fastDoorViolations = newViolationMap("fastDoor");
     private final Map<UUID, Long> lastFenceGateTime = new ConcurrentHashMap<>();
-    private final Map<UUID, Integer> fastFenceGateViolations = new ConcurrentHashMap<>();
+    private final Map<UUID, Integer> fastFenceGateViolations = newViolationMap("fastFenceGate");
     private final Map<UUID, Long> lastLeverTime = new ConcurrentHashMap<>();
-    private final Map<UUID, Integer> fastLeverViolations = new ConcurrentHashMap<>();
+    private final Map<UUID, Integer> fastLeverViolations = newViolationMap("fastLever");
     private final Map<UUID, Long> lastButtonTime = new ConcurrentHashMap<>();
-    private final Map<UUID, Integer> fastButtonViolations = new ConcurrentHashMap<>();
+    private final Map<UUID, Integer> fastButtonViolations = newViolationMap("fastButton");
     private final Map<UUID, Long> lastTrapdoorTime = new ConcurrentHashMap<>();
-    private final Map<UUID, Integer> fastTrapdoorViolations = new ConcurrentHashMap<>();
+    private final Map<UUID, Integer> fastTrapdoorViolations = newViolationMap("fastTrapdoor");
     private final Map<UUID, Long> lastPotionTime = new ConcurrentHashMap<>();
-    private final Map<UUID, Integer> autoPotViolations = new ConcurrentHashMap<>();
+    private final Map<UUID, Integer> autoPotViolations = newViolationMap("autoPot");
     private final Map<UUID, Long> lastBucketTime = new ConcurrentHashMap<>();
-    private final Map<UUID, Integer> fastBucketViolations = new ConcurrentHashMap<>();
+    private final Map<UUID, Integer> fastBucketViolations = newViolationMap("fastBucket");
 
     // ItemConsume
     private final Map<UUID, Long> lastPotionConsumeTime = new ConcurrentHashMap<>();
-    private final Map<UUID, Integer> fastPotionViolations = new ConcurrentHashMap<>();
+    private final Map<UUID, Integer> fastPotionViolations = newViolationMap("fastPotion");
     private final Map<UUID, Long> lastMilkTime = new ConcurrentHashMap<>();
-    private final Map<UUID, Integer> fastMilkViolations = new ConcurrentHashMap<>();
+    private final Map<UUID, Integer> fastMilkViolations = newViolationMap("fastMilk");
     private final Map<UUID, Long> lastHoneyTime = new ConcurrentHashMap<>();
-    private final Map<UUID, Integer> fastHoneyViolations = new ConcurrentHashMap<>();
+    private final Map<UUID, Integer> fastHoneyViolations = newViolationMap("fastHoney");
 
     // BlockBreak
-    private final Map<UUID, Integer> breakReachViolations = new ConcurrentHashMap<>();
+    private final Map<UUID, Integer> breakReachViolations = newViolationMap("breakReach");
     private final Map<UUID, Long> lastOreBreakTime = new ConcurrentHashMap<>();
-    private final Map<UUID, Integer> fastOreViolations = new ConcurrentHashMap<>();
-    private final Map<UUID, Integer> breakWhileMovingViolations = new ConcurrentHashMap<>();
+    private final Map<UUID, Integer> fastOreViolations = newViolationMap("fastOre");
+    private final Map<UUID, Integer> breakWhileMovingViolations = newViolationMap("breakWhileMoving");
 
     // BlockPlace
-    private final Map<UUID, Integer> placeReachViolations = new ConcurrentHashMap<>();
+    private final Map<UUID, Integer> placeReachViolations = newViolationMap("placeReach");
     private final Map<UUID, Long> lastGeneralPlaceTime = new ConcurrentHashMap<>();
-    private final Map<UUID, Integer> fastPlaceViolations = new ConcurrentHashMap<>();
+    private final Map<UUID, Integer> fastPlaceViolations = newViolationMap("fastPlace");
 
     // InventoryClick / ItemHeld
     private final Map<UUID, Long> lastShiftClickTime = new ConcurrentHashMap<>();
-    private final Map<UUID, Integer> fastShiftClickViolations = new ConcurrentHashMap<>();
+    private final Map<UUID, Integer> fastShiftClickViolations = newViolationMap("fastShiftClick");
     private final Map<UUID, Long> lastHotbarSwapTime = new ConcurrentHashMap<>();
-    private final Map<UUID, Integer> fastHotbarSwapViolations = new ConcurrentHashMap<>();
+    private final Map<UUID, Integer> fastHotbarSwapViolations = newViolationMap("fastHotbarSwap");
 
     // SneakSpam
     private final Map<UUID, Long> lastSneakToggleTime = new ConcurrentHashMap<>();
-    private final Map<UUID, Integer> sneakSpamViolations = new ConcurrentHashMap<>();
+    private final Map<UUID, Integer> sneakSpamViolations = newViolationMap("sneakSpam");
 
     // New-event handlers
     private final Map<UUID, Long> lastDropTime = new ConcurrentHashMap<>();
-    private final Map<UUID, Integer> fastDropViolations = new ConcurrentHashMap<>();
+    private final Map<UUID, Integer> fastDropViolations = newViolationMap("fastDrop");
     private final Map<UUID, Long> lastPickupTime = new ConcurrentHashMap<>();
-    private final Map<UUID, Integer> fastPickupViolations = new ConcurrentHashMap<>();
+    private final Map<UUID, Integer> fastPickupViolations = newViolationMap("fastPickup");
     private final Map<UUID, Long> lastProjectileTime = new ConcurrentHashMap<>();
-    private final Map<UUID, Integer> fastProjectileViolations = new ConcurrentHashMap<>();
+    private final Map<UUID, Integer> fastProjectileViolations = newViolationMap("fastProjectile");
     private final Map<UUID, Long> lastSprintToggleTime = new ConcurrentHashMap<>();
-    private final Map<UUID, Integer> sprintSpamViolations = new ConcurrentHashMap<>();
+    private final Map<UUID, Integer> sprintSpamViolations = newViolationMap("sprintSpam");
     private final Map<UUID, Long> lastFlightToggleTime = new ConcurrentHashMap<>();
-    private final Map<UUID, Integer> flightSpamViolations = new ConcurrentHashMap<>();
+    private final Map<UUID, Integer> flightSpamViolations = newViolationMap("flightSpam");
     private final Map<UUID, Long> lastGlideToggleTime = new ConcurrentHashMap<>();
-    private final Map<UUID, Integer> glideSpamViolations = new ConcurrentHashMap<>();
+    private final Map<UUID, Integer> glideSpamViolations = newViolationMap("glideSpam");
     private final Map<UUID, Long> lastSwimToggleTime = new ConcurrentHashMap<>();
-    private final Map<UUID, Integer> swimSpamViolations = new ConcurrentHashMap<>();
+    private final Map<UUID, Integer> swimSpamViolations = newViolationMap("swimSpam");
     private final Map<UUID, Long> lastSwapTime = new ConcurrentHashMap<>();
-    private final Map<UUID, Integer> swapSpamViolations = new ConcurrentHashMap<>();
-    private final Map<UUID, Integer> noHungerViolations = new ConcurrentHashMap<>();
+    private final Map<UUID, Integer> swapSpamViolations = newViolationMap("swapSpam");
+    private final Map<UUID, Integer> noHungerViolations = newViolationMap("noHunger");
     private final Map<UUID, Long> lastShearTime = new ConcurrentHashMap<>();
-    private final Map<UUID, Integer> fastShearViolations = new ConcurrentHashMap<>();
+    private final Map<UUID, Integer> fastShearViolations = newViolationMap("fastShear");
     private final Map<UUID, Long> lastBucketEmptyTime = new ConcurrentHashMap<>();
-    private final Map<UUID, Integer> fastBucketEmptyViolations = new ConcurrentHashMap<>();
+    private final Map<UUID, Integer> fastBucketEmptyViolations = newViolationMap("fastBucketEmpty");
     private final Map<UUID, Long> lastBucketFillTime = new ConcurrentHashMap<>();
-    private final Map<UUID, Integer> fastBucketFillViolations = new ConcurrentHashMap<>();
+    private final Map<UUID, Integer> fastBucketFillViolations = newViolationMap("fastBucketFill");
     private final Map<UUID, Long> lastBedTime = new ConcurrentHashMap<>();
-    private final Map<UUID, Integer> bedSpamViolations = new ConcurrentHashMap<>();
+    private final Map<UUID, Integer> bedSpamViolations = newViolationMap("bedSpam");
     private final Map<UUID, Long> lastTotemTime = new ConcurrentHashMap<>();
-    private final Map<UUID, Integer> autoTotemViolations = new ConcurrentHashMap<>();
+    private final Map<UUID, Integer> autoTotemViolations = newViolationMap("autoTotem");
     private final Map<UUID, Long> lastExpTime = new ConcurrentHashMap<>();
-    private final Map<UUID, Integer> fastExpViolations = new ConcurrentHashMap<>();
+    private final Map<UUID, Integer> fastExpViolations = newViolationMap("fastExp");
     private final Map<UUID, Long> lastChatTime = new ConcurrentHashMap<>();
-    private final Map<UUID, Integer> chatSpamViolations = new ConcurrentHashMap<>();
+    private final Map<UUID, Integer> chatSpamViolations = newViolationMap("chatSpam");
     private final Map<UUID, Long> lastCommandTime = new ConcurrentHashMap<>();
-    private final Map<UUID, Integer> commandSpamViolations = new ConcurrentHashMap<>();
+    private final Map<UUID, Integer> commandSpamViolations = newViolationMap("commandSpam");
     private final Map<UUID, Long> lastEggTime = new ConcurrentHashMap<>();
-    private final Map<UUID, Integer> fastEggViolations = new ConcurrentHashMap<>();
+    private final Map<UUID, Integer> fastEggViolations = newViolationMap("fastEgg");
 
     // 玩家单独开关：
     //   全局开时 disabledPlayers 中的玩家被显式禁用
     //   全局关时 enabledPlayers 中的玩家被显式启用
     private final Set<UUID> disabledPlayers = ConcurrentHashMap.newKeySet();
     private final Set<UUID> enabledPlayers = ConcurrentHashMap.newKeySet();
+    private final ThreadLocal<String> nextViolationCheckName = new ThreadLocal<>();
 
     // 配置参数
     private int maxReachViolations;
@@ -1008,6 +1009,73 @@ public class AntiBitch extends JavaPlugin implements Listener {
         }
     }
 
+    private Map<UUID, Integer> newViolationMap(String checkName) {
+        return new ConcurrentHashMap<UUID, Integer>() {
+            @Override
+            public Integer put(UUID playerId, Integer violations) {
+                Integer previous = super.put(playerId, violations);
+                String overrideCheckName = nextViolationCheckName.get();
+                notifyViolation(overrideCheckName != null ? overrideCheckName : checkName, playerId, previous, violations);
+                return previous;
+            }
+        };
+    }
+
+    private void notifyViolation(String checkName, UUID playerId, Integer previous, Integer violations) {
+        if (violations == null || violations <= 0 || (previous != null && violations <= previous)) {
+            return;
+        }
+
+        Runnable notifyTask = () -> {
+            Player target = Bukkit.getPlayer(playerId);
+            String playerName = target != null ? target.getName() : playerId.toString();
+            String displayCheckName = formatCheckName(checkName);
+            String message = ChatColor.RED + "[AntiBitch] " + ChatColor.YELLOW + playerName
+                    + ChatColor.RED + " 触发 " + ChatColor.GOLD + displayCheckName
+                    + ChatColor.RED + " 检测 VL " + ChatColor.YELLOW + violations;
+
+            for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
+                if (onlinePlayer.hasPermission("antibitch.admin")) {
+                    onlinePlayer.sendMessage(message);
+                }
+            }
+        };
+
+        if (Bukkit.isPrimaryThread()) {
+            notifyTask.run();
+        } else {
+            Bukkit.getScheduler().runTask(this, notifyTask);
+        }
+    }
+
+    private String formatCheckName(String checkName) {
+        if (checkName == null || checkName.isEmpty()) {
+            return "Unknown";
+        }
+        return Character.toUpperCase(checkName.charAt(0)) + checkName.substring(1);
+    }
+
+    private void punish(Player player, String kickMessage) {
+        if (!Bukkit.isPrimaryThread()) {
+            Bukkit.getScheduler().runTask(this, () -> punish(player, kickMessage));
+            return;
+        }
+
+        String reason = kickMessage != null ? kickMessage : "检测到作弊行为";
+        Bukkit.broadcastMessage(ChatColor.RED + "[AntiBitch] 玩家 " + ChatColor.YELLOW + player.getName()
+                + ChatColor.RED + " 因作弊检测被踢出: " + ChatColor.YELLOW + reason);
+        player.kickPlayer(kickMessage);
+    }
+
+    private void putViolation(Map<UUID, Integer> violationsMap, UUID playerId, int violations, String checkName) {
+        nextViolationCheckName.set(checkName);
+        try {
+            violationsMap.put(playerId, violations);
+        } finally {
+            nextViolationCheckName.remove();
+        }
+    }
+
     /**
      * 检查插件全局开关是否启用
      *
@@ -1188,7 +1256,7 @@ public class AntiBitch extends JavaPlugin implements Listener {
 
                     if (violations >= maxAimbotViolations) {
                         String kickMessage = getConfig().getString("aimbot.kick-message", "检测到自动瞄准");
-                        player.kickPlayer(kickMessage);
+                        punish(player, kickMessage);
                         getLogger().info("玩家 " + player.getName() + " 因 Aimbot 作弊被踢出");
                         return;
                     }
@@ -1208,7 +1276,7 @@ public class AntiBitch extends JavaPlugin implements Listener {
 
                 if (violations >= maxHitboxViolations) {
                     String kickMessage = getConfig().getString("hitbox.kick-message", "检测到碰撞箱修改");
-                    player.kickPlayer(kickMessage);
+                    punish(player, kickMessage);
                     getLogger().info("玩家 " + player.getName() + " 因 Hitbox 作弊被踢出");
                     return;
                 }
@@ -1223,18 +1291,10 @@ public class AntiBitch extends JavaPlugin implements Listener {
 
                 if (vl >= maxReachViolations) {
                     String kickMessage = getConfig().getString("reach.kick-message", "检测到异常攻击距离");
-                    player.kickPlayer(kickMessage);
+                    punish(player, kickMessage);
                     reachViolations.remove(playerId);
                     getLogger().info("玩家 " + player.getName() + " 因 Reach 作弊被踢出");
                     return;
-                } else {
-                    if (getConfig().getBoolean("settings.broadcast-alerts", true)) {
-                        String alertTemplate = getConfig().getString("reach.alert-message", "[AntiBitch] 玩家 %player% 触发了 Reach 检测 (距离: %distance% 方块)");
-                        String alertMessage = alertTemplate
-                                .replace("%player%", player.getName())
-                                .replace("%distance%", String.format("%.2f", distance));
-                        Bukkit.getServer().broadcastMessage(ChatColor.translateAlternateColorCodes('&', alertMessage));
-                    }
                 }
             }
         }
@@ -1253,18 +1313,13 @@ public class AntiBitch extends JavaPlugin implements Listener {
                 attackCount.put(playerId, attacks + 1);
                 if (attacks + 1 > maxAttacksPerSecond) {
                     int violations = reachViolations.getOrDefault(playerId, 0) + 1;
-                    reachViolations.put(playerId, violations);
+                    putViolation(reachViolations, playerId, violations, "killAura");
 
                     if (violations >= maxKillAuraViolations) {
                         String kickMessage = getConfig().getString("killaura.kick-message", "检测到异常攻击频率");
-                        player.kickPlayer(kickMessage);
+                        punish(player, kickMessage);
                         getLogger().info("玩家 " + player.getName() + " 因 KillAura 作弊被踢出");
                         return;
-                    } else {
-                        if (getConfig().getBoolean("settings.broadcast-alerts", true)) {
-                            String alertMessage = "[AntiBitch] 玩家 " + player.getName() + " 触发了 KillAura 检测";
-                            Bukkit.getServer().broadcastMessage(ChatColor.translateAlternateColorCodes('&', alertMessage));
-                        }
                     }
                 }
             }
@@ -1284,7 +1339,7 @@ public class AntiBitch extends JavaPlugin implements Listener {
                     critCount.put(playerId, crits + 1);
                     if (crits + 1 > maxCritsPerSecond) {
                         String kickMessage = getConfig().getString("criticals.kick-message", "检测到异常暴击频率");
-                        player.kickPlayer(kickMessage);
+                        punish(player, kickMessage);
                         getLogger().info("玩家 " + player.getName() + " 因 Criticals 作弊被踢出");
                         return;
                     }
@@ -1305,18 +1360,13 @@ public class AntiBitch extends JavaPlugin implements Listener {
                 clickCount.put(playerId, clicks + 1);
                 if (clicks + 1 > maxClicksPerSecond) {
                     int violations = reachViolations.getOrDefault(playerId, 0) + 1;
-                    reachViolations.put(playerId, violations);
+                    putViolation(reachViolations, playerId, violations, "autoClicker");
 
                     if (violations >= maxAutoClickerViolations) {
                         String kickMessage = getConfig().getString("autoclicker.kick-message", "检测到异常点击速度");
-                        player.kickPlayer(kickMessage);
+                        punish(player, kickMessage);
                         getLogger().info("玩家 " + player.getName() + " 因 AutoClicker 作弊被踢出");
                         return;
-                    } else {
-                        if (getConfig().getBoolean("settings.broadcast-alerts", true)) {
-                            String alertMessage = "[AntiBitch] 玩家 " + player.getName() + " 触发了 AutoClicker 检测";
-                            Bukkit.getServer().broadcastMessage(ChatColor.translateAlternateColorCodes('&', alertMessage));
-                        }
                     }
                 }
             }
@@ -1333,7 +1383,7 @@ public class AntiBitch extends JavaPlugin implements Listener {
 
                 if (violations >= maxNoSwingViolations) {
                     String kickMessage = getConfig().getString("noswing.kick-message", "检测到攻击无挥动");
-                    player.kickPlayer(kickMessage);
+                    punish(player, kickMessage);
                     getLogger().info("玩家 " + player.getName() + " 因 NoSwing 作弊被踢出");
                     return;
                 }
@@ -1347,7 +1397,7 @@ public class AntiBitch extends JavaPlugin implements Listener {
                 int violations = reachVerticalViolations.getOrDefault(playerId, 0) + 1;
                 reachVerticalViolations.put(playerId, violations);
                 if (violations >= maxReachVerticalViolations) {
-                    player.kickPlayer(getConfig().getString("reachvertical.kick-message", "检测到纵向攻击距离过大"));
+                    punish(player, getConfig().getString("reachvertical.kick-message", "检测到纵向攻击距离过大"));
                     getLogger().info("玩家 " + player.getName() + " 因 ReachVertical 作弊被踢出");
                     return;
                 }
@@ -1372,7 +1422,7 @@ public class AntiBitch extends JavaPlugin implements Listener {
                     int violations = attackThroughWallViolations.getOrDefault(playerId, 0) + 1;
                     attackThroughWallViolations.put(playerId, violations);
                     if (violations >= maxAttackThroughWallViolations) {
-                        player.kickPlayer(getConfig().getString("attackthroughwall.kick-message", "检测到隔墙攻击"));
+                        punish(player, getConfig().getString("attackthroughwall.kick-message", "检测到隔墙攻击"));
                         getLogger().info("玩家 " + player.getName() + " 因 AttackThroughWall 作弊被踢出");
                         return;
                     }
@@ -1386,7 +1436,7 @@ public class AntiBitch extends JavaPlugin implements Listener {
             int violations = criticalFakeViolations.getOrDefault(playerId, 0) + 1;
             criticalFakeViolations.put(playerId, violations);
             if (violations >= maxCriticalFakeViolations) {
-                player.kickPlayer(getConfig().getString("criticalfake.kick-message", "检测到伪造暴击"));
+                punish(player, getConfig().getString("criticalfake.kick-message", "检测到伪造暴击"));
                 getLogger().info("玩家 " + player.getName() + " 因 CriticalFake 作弊被踢出");
                 return;
             }
@@ -1400,7 +1450,7 @@ public class AntiBitch extends JavaPlugin implements Listener {
                 int violations = noCooldownViolations.getOrDefault(playerId, 0) + 1;
                 noCooldownViolations.put(playerId, violations);
                 if (violations >= maxNoCooldownViolations) {
-                    player.kickPlayer(getConfig().getString("nocooldown.kick-message", "检测到攻击无冷却"));
+                    punish(player, getConfig().getString("nocooldown.kick-message", "检测到攻击无冷却"));
                     getLogger().info("玩家 " + player.getName() + " 因 NoCooldown 作弊被踢出");
                     return;
                 }
@@ -1416,7 +1466,7 @@ public class AntiBitch extends JavaPlugin implements Listener {
                 int violations = triggerBotViolations.getOrDefault(playerId, 0) + 1;
                 triggerBotViolations.put(playerId, violations);
                 if (violations >= maxTriggerBotViolations) {
-                    player.kickPlayer(getConfig().getString("triggerbot.kick-message", "检测到精准冷却攻击"));
+                    punish(player, getConfig().getString("triggerbot.kick-message", "检测到精准冷却攻击"));
                     getLogger().info("玩家 " + player.getName() + " 因 TriggerBot 作弊被踢出");
                     return;
                 }
@@ -1437,7 +1487,7 @@ public class AntiBitch extends JavaPlugin implements Listener {
                     int violations = multiAttackViolations.getOrDefault(playerId, 0) + 1;
                     multiAttackViolations.put(playerId, violations);
                     if (violations >= maxMultiAttackViolations) {
-                        player.kickPlayer(getConfig().getString("multiattack.kick-message", "检测到多实体攻击"));
+                        punish(player, getConfig().getString("multiattack.kick-message", "检测到多实体攻击"));
                         getLogger().info("玩家 " + player.getName() + " 因 MultiAttack 作弊被踢出");
                         return;
                     }
@@ -1457,7 +1507,7 @@ public class AntiBitch extends JavaPlugin implements Listener {
                     int violations = snapAimViolations.getOrDefault(playerId, 0) + 1;
                     snapAimViolations.put(playerId, violations);
                     if (violations >= maxSnapAimViolations) {
-                        player.kickPlayer(getConfig().getString("snapaim.kick-message", "检测到攻击瞬间朝向突变"));
+                        punish(player, getConfig().getString("snapaim.kick-message", "检测到攻击瞬间朝向突变"));
                         getLogger().info("玩家 " + player.getName() + " 因 SnapAim 作弊被踢出");
                         return;
                     }
@@ -1472,7 +1522,7 @@ public class AntiBitch extends JavaPlugin implements Listener {
             int violations = attackWhileSprintingViolations.getOrDefault(playerId, 0) + 1;
             attackWhileSprintingViolations.put(playerId, violations);
             if (violations >= maxAttackWhileSprintingViolations) {
-                player.kickPlayer(getConfig().getString("attackwhilesprinting.kick-message", "检测到疾跑攻击"));
+                punish(player, getConfig().getString("attackwhilesprinting.kick-message", "检测到疾跑攻击"));
                 getLogger().info("玩家 " + player.getName() + " 因 AttackWhileSprinting 作弊被踢出");
                 return;
             }
@@ -1514,7 +1564,7 @@ public class AntiBitch extends JavaPlugin implements Listener {
 
         if (speed > maxSpeed) {
             String kickMessage = getConfig().getString("speed.kick-message", "检测到异常移动速度");
-            player.kickPlayer(kickMessage);
+            punish(player, kickMessage);
             getLogger().info("玩家 " + player.getName() + " 因 Speed 作弊被踢出 (速度: " + speed + ")");
         } else {
             moveTimes.put(playerId, now);
@@ -1523,7 +1573,7 @@ public class AntiBitch extends JavaPlugin implements Listener {
 
             if (count > maxAirMoves) {
                 String kickMessage = getConfig().getString("fly.kick-message", "此服务器未启用飞行功能");
-                player.kickPlayer(kickMessage);
+                punish(player, kickMessage);
                 getLogger().info("玩家 " + player.getName() + " 因 Fly 作弊被踢出");
                 moveCount.remove(playerId);
             }
@@ -1541,7 +1591,7 @@ public class AntiBitch extends JavaPlugin implements Listener {
 
                 if (violations >= maxTimerViolations) {
                     String kickMessage = getConfig().getString("timer.kick-message", "检测到时间加速");
-                    player.kickPlayer(kickMessage);
+                    punish(player, kickMessage);
                     getLogger().info("玩家 " + player.getName() + " 因 Timer 作弊被踢出");
                     return;
                 }
@@ -1560,7 +1610,7 @@ public class AntiBitch extends JavaPlugin implements Listener {
 
                     if (violations >= maxNoSlowViolations) {
                         String kickMessage = getConfig().getString("noslow.kick-message", "检测到无减速");
-                        player.kickPlayer(kickMessage);
+                        punish(player, kickMessage);
                         getLogger().info("玩家 " + player.getName() + " 因 NoSlow 作弊被踢出");
                         return;
                     }
@@ -1577,7 +1627,7 @@ public class AntiBitch extends JavaPlugin implements Listener {
 
                 if (violations >= maxSprintViolations) {
                     String kickMessage = getConfig().getString("sprint.kick-message", "检测到自动疾跑");
-                    player.kickPlayer(kickMessage);
+                    punish(player, kickMessage);
                     getLogger().info("玩家 " + player.getName() + " 因 Sprint 作弊被踢出");
                     return;
                 }
@@ -1610,7 +1660,7 @@ public class AntiBitch extends JavaPlugin implements Listener {
                 // 如果玩家从高处落下但没有受到伤害，可能是 NoFall
                 if (event.getDamage() == 0) {
                     String kickMessage = getConfig().getString("nofall.kick-message", "检测到无坠落伤害");
-                    player.kickPlayer(kickMessage);
+                    punish(player, kickMessage);
                     getLogger().info("玩家 " + player.getName() + " 因 NoFall 作弊被踢出");
                 }
             }
@@ -1642,7 +1692,7 @@ public class AntiBitch extends JavaPlugin implements Listener {
 
                 if (violations >= maxRegenViolations) {
                     String kickMessage = getConfig().getString("regen.kick-message", "检测到快速回血");
-                    player.kickPlayer(kickMessage);
+                    punish(player, kickMessage);
                     getLogger().info("玩家 " + player.getName() + " 因 Regen 作弊被踢出");
                     return;
                 }
@@ -1678,7 +1728,7 @@ public class AntiBitch extends JavaPlugin implements Listener {
 
                         if (violations >= maxFastBowViolations) {
                             String kickMessage = getConfig().getString("fastbow.kick-message", "检测到快速射箭");
-                            player.kickPlayer(kickMessage);
+                            punish(player, kickMessage);
                             getLogger().info("玩家 " + player.getName() + " 因 FastBow 作弊被踢出");
                             return;
                         }
@@ -1698,7 +1748,7 @@ public class AntiBitch extends JavaPlugin implements Listener {
                 int violations = fastInteractViolations.getOrDefault(playerId, 0) + 1;
                 fastInteractViolations.put(playerId, violations);
                 if (violations >= maxFastInteractViolations) {
-                    player.kickPlayer(getConfig().getString("fastinteract.kick-message", "检测到快速交互"));
+                    punish(player, getConfig().getString("fastinteract.kick-message", "检测到快速交互"));
                     getLogger().info("玩家 " + player.getName() + " 因 FastInteract 作弊被踢出");
                     return;
                 }
@@ -1717,35 +1767,35 @@ public class AntiBitch extends JavaPlugin implements Listener {
                 lastT = lastDoorTime.getOrDefault(playerId, now - minDoorInterval);
                 if (now - lastT < minDoorInterval) {
                     int v = fastDoorViolations.getOrDefault(playerId, 0) + 1; fastDoorViolations.put(playerId, v);
-                    if (v >= maxFastDoorViolations) { player.kickPlayer(getConfig().getString("fastdoor.kick-message", "检测到快速门切换")); getLogger().info("玩家 " + player.getName() + " 因 FastDoor 作弊被踢出"); return; }
+                    if (v >= maxFastDoorViolations) { punish(player, getConfig().getString("fastdoor.kick-message", "检测到快速门切换")); getLogger().info("玩家 " + player.getName() + " 因 FastDoor 作弊被踢出"); return; }
                 }
                 lastDoorTime.put(playerId, now);
             } else if (t.name().endsWith("_FENCE_GATE")) {
                 lastT = lastFenceGateTime.getOrDefault(playerId, now - minFenceGateInterval);
                 if (now - lastT < minFenceGateInterval) {
                     int v = fastFenceGateViolations.getOrDefault(playerId, 0) + 1; fastFenceGateViolations.put(playerId, v);
-                    if (v >= maxFastFenceGateViolations) { player.kickPlayer(getConfig().getString("fastfencegate.kick-message", "检测到快速栅栏门切换")); getLogger().info("玩家 " + player.getName() + " 因 FastFenceGate 作弊被踢出"); return; }
+                    if (v >= maxFastFenceGateViolations) { punish(player, getConfig().getString("fastfencegate.kick-message", "检测到快速栅栏门切换")); getLogger().info("玩家 " + player.getName() + " 因 FastFenceGate 作弊被踢出"); return; }
                 }
                 lastFenceGateTime.put(playerId, now);
             } else if (t == Material.LEVER) {
                 lastT = lastLeverTime.getOrDefault(playerId, now - minLeverInterval);
                 if (now - lastT < minLeverInterval) {
                     int v = fastLeverViolations.getOrDefault(playerId, 0) + 1; fastLeverViolations.put(playerId, v);
-                    if (v >= maxFastLeverViolations) { player.kickPlayer(getConfig().getString("fastlever.kick-message", "检测到快速拉杆切换")); getLogger().info("玩家 " + player.getName() + " 因 FastLever 作弊被踢出"); return; }
+                    if (v >= maxFastLeverViolations) { punish(player, getConfig().getString("fastlever.kick-message", "检测到快速拉杆切换")); getLogger().info("玩家 " + player.getName() + " 因 FastLever 作弊被踢出"); return; }
                 }
                 lastLeverTime.put(playerId, now);
             } else if (t.name().endsWith("_BUTTON")) {
                 lastT = lastButtonTime.getOrDefault(playerId, now - minButtonInterval);
                 if (now - lastT < minButtonInterval) {
                     int v = fastButtonViolations.getOrDefault(playerId, 0) + 1; fastButtonViolations.put(playerId, v);
-                    if (v >= maxFastButtonViolations) { player.kickPlayer(getConfig().getString("fastbutton.kick-message", "检测到快速按钮切换")); getLogger().info("玩家 " + player.getName() + " 因 FastButton 作弊被踢出"); return; }
+                    if (v >= maxFastButtonViolations) { punish(player, getConfig().getString("fastbutton.kick-message", "检测到快速按钮切换")); getLogger().info("玩家 " + player.getName() + " 因 FastButton 作弊被踢出"); return; }
                 }
                 lastButtonTime.put(playerId, now);
             } else if (t.name().endsWith("_TRAPDOOR")) {
                 lastT = lastTrapdoorTime.getOrDefault(playerId, now - minTrapdoorInterval);
                 if (now - lastT < minTrapdoorInterval) {
                     int v = fastTrapdoorViolations.getOrDefault(playerId, 0) + 1; fastTrapdoorViolations.put(playerId, v);
-                    if (v >= maxFastTrapdoorViolations) { player.kickPlayer(getConfig().getString("fasttrapdoor.kick-message", "检测到快速活板门切换")); getLogger().info("玩家 " + player.getName() + " 因 FastTrapdoor 作弊被踢出"); return; }
+                    if (v >= maxFastTrapdoorViolations) { punish(player, getConfig().getString("fasttrapdoor.kick-message", "检测到快速活板门切换")); getLogger().info("玩家 " + player.getName() + " 因 FastTrapdoor 作弊被踢出"); return; }
                 }
                 lastTrapdoorTime.put(playerId, now);
             }
@@ -1759,7 +1809,7 @@ public class AntiBitch extends JavaPlugin implements Listener {
                 int violations = autoPotViolations.getOrDefault(playerId, 0) + 1;
                 autoPotViolations.put(playerId, violations);
                 if (violations >= maxAutoPotViolations) {
-                    player.kickPlayer(getConfig().getString("autopot.kick-message", "检测到自动喷溅药水"));
+                    punish(player, getConfig().getString("autopot.kick-message", "检测到自动喷溅药水"));
                     getLogger().info("玩家 " + player.getName() + " 因 AutoPot 作弊被踢出");
                     return;
                 }
@@ -1776,7 +1826,7 @@ public class AntiBitch extends JavaPlugin implements Listener {
                 int violations = fastBucketViolations.getOrDefault(playerId, 0) + 1;
                 fastBucketViolations.put(playerId, violations);
                 if (violations >= maxFastBucketViolations) {
-                    player.kickPlayer(getConfig().getString("fastbucket.kick-message", "检测到快速桶使用"));
+                    punish(player, getConfig().getString("fastbucket.kick-message", "检测到快速桶使用"));
                     getLogger().info("玩家 " + player.getName() + " 因 FastBucket 作弊被踢出");
                     return;
                 }
@@ -1807,7 +1857,7 @@ public class AntiBitch extends JavaPlugin implements Listener {
 
                 if (violations >= maxScaffoldViolations) {
                     String kickMessage = getConfig().getString("scaffold.kick-message", "检测到自动搭桥");
-                    player.kickPlayer(kickMessage);
+                    punish(player, kickMessage);
                     getLogger().info("玩家 " + player.getName() + " 因 Scaffold 作弊被踢出");
                     return;
                 }
@@ -1830,7 +1880,7 @@ public class AntiBitch extends JavaPlugin implements Listener {
 
                     if (violations >= maxTowerViolations) {
                         String kickMessage = getConfig().getString("tower.kick-message", "检测到自动搭塔");
-                        player.kickPlayer(kickMessage);
+                        punish(player, kickMessage);
                         getLogger().info("玩家 " + player.getName() + " 因 Tower 作弊被踢出");
                         return;
                     }
@@ -1846,7 +1896,7 @@ public class AntiBitch extends JavaPlugin implements Listener {
                 int violations = placeReachViolations.getOrDefault(playerId, 0) + 1;
                 placeReachViolations.put(playerId, violations);
                 if (violations >= maxPlaceReachViolations) {
-                    player.kickPlayer(getConfig().getString("placereach.kick-message", "检测到放置方块距离过远"));
+                    punish(player, getConfig().getString("placereach.kick-message", "检测到放置方块距离过远"));
                     getLogger().info("玩家 " + player.getName() + " 因 PlaceReach 作弊被踢出");
                     return;
                 }
@@ -1860,7 +1910,7 @@ public class AntiBitch extends JavaPlugin implements Listener {
                 int violations = fastPlaceViolations.getOrDefault(playerId, 0) + 1;
                 fastPlaceViolations.put(playerId, violations);
                 if (violations >= maxFastPlaceViolations) {
-                    player.kickPlayer(getConfig().getString("fastplace.kick-message", "检测到快速放置方块"));
+                    punish(player, getConfig().getString("fastplace.kick-message", "检测到快速放置方块"));
                     getLogger().info("玩家 " + player.getName() + " 因 FastPlace 作弊被踢出");
                     return;
                 }
@@ -1891,7 +1941,7 @@ public class AntiBitch extends JavaPlugin implements Listener {
 
                 if (violations >= maxAutoToolViolations) {
                     String kickMessage = getConfig().getString("autotool.kick-message", "检测到自动切换工具");
-                    player.kickPlayer(kickMessage);
+                    punish(player, kickMessage);
                     getLogger().info("玩家 " + player.getName() + " 因 AutoTool 作弊被踢出");
                     return;
                 }
@@ -1907,7 +1957,7 @@ public class AntiBitch extends JavaPlugin implements Listener {
                 int violations = fastHotbarSwapViolations.getOrDefault(playerId, 0) + 1;
                 fastHotbarSwapViolations.put(playerId, violations);
                 if (violations >= maxFastHotbarSwapViolations) {
-                    player.kickPlayer(getConfig().getString("fasthotbarswap.kick-message", "检测到快速快捷栏切换"));
+                    punish(player, getConfig().getString("fasthotbarswap.kick-message", "检测到快速快捷栏切换"));
                     getLogger().info("玩家 " + player.getName() + " 因 FastHotbarSwap 作弊被踢出");
                     return;
                 }
@@ -1942,11 +1992,11 @@ public class AntiBitch extends JavaPlugin implements Listener {
                 inventoryClickCount.put(playerId, clicks + 1);
                 if (clicks + 1 > maxInventoryClicksPerSecond) {
                     int violations = reachViolations.getOrDefault(playerId, 0) + 1;
-                    reachViolations.put(playerId, violations);
+                    putViolation(reachViolations, playerId, violations, "inventoryCleaner");
 
                     if (violations >= maxInventoryCleanerViolations) {
                         String kickMessage = getConfig().getString("inventorycleaner.kick-message", "检测到自动清理背包");
-                        player.kickPlayer(kickMessage);
+                        punish(player, kickMessage);
                         getLogger().info("玩家 " + player.getName() + " 因 InventoryCleaner 作弊被踢出");
                         return;
                     }
@@ -1974,7 +2024,7 @@ public class AntiBitch extends JavaPlugin implements Listener {
 
                         if (violations >= maxChestStealerViolations) {
                             String kickMessage = getConfig().getString("cheststealer.kick-message", "检测到快速偷箱子");
-                            player.kickPlayer(kickMessage);
+                            punish(player, kickMessage);
                             getLogger().info("玩家 " + player.getName() + " 因 ChestStealer 作弊被踢出");
                             return;
                         }
@@ -1995,7 +2045,7 @@ public class AntiBitch extends JavaPlugin implements Listener {
 
                 if (violations >= maxAutoArmorViolations) {
                     String kickMessage = getConfig().getString("autoarmor.kick-message", "检测到自动装备护甲");
-                    player.kickPlayer(kickMessage);
+                    punish(player, kickMessage);
                     getLogger().info("玩家 " + player.getName() + " 因 AutoArmor 作弊被踢出");
                     return;
                 }
@@ -2011,7 +2061,7 @@ public class AntiBitch extends JavaPlugin implements Listener {
                 int violations = fastShiftClickViolations.getOrDefault(playerId, 0) + 1;
                 fastShiftClickViolations.put(playerId, violations);
                 if (violations >= maxFastShiftClickViolations) {
-                    player.kickPlayer(getConfig().getString("fastshiftclick.kick-message", "检测到快速 shift-click"));
+                    punish(player, getConfig().getString("fastshiftclick.kick-message", "检测到快速 shift-click"));
                     getLogger().info("玩家 " + player.getName() + " 因 FastShiftClick 作弊被踢出");
                     return;
                 }
@@ -2048,7 +2098,7 @@ public class AntiBitch extends JavaPlugin implements Listener {
 
                         if (violations >= maxSneakViolations) {
                             String kickMessage = getConfig().getString("sneak.kick-message", "检测到自动潜行");
-                            player.kickPlayer(kickMessage);
+                            punish(player, kickMessage);
                             getLogger().info("玩家 " + player.getName() + " 因 Sneak 作弊被踢出");
                             return;
                         }
@@ -2066,7 +2116,7 @@ public class AntiBitch extends JavaPlugin implements Listener {
                 int violations = sneakSpamViolations.getOrDefault(playerId, 0) + 1;
                 sneakSpamViolations.put(playerId, violations);
                 if (violations >= maxSneakSpamViolations) {
-                    player.kickPlayer(getConfig().getString("sneakspam.kick-message", "检测到快速潜行切换"));
+                    punish(player, getConfig().getString("sneakspam.kick-message", "检测到快速潜行切换"));
                     getLogger().info("玩家 " + player.getName() + " 因 SneakSpam 作弊被踢出");
                     return;
                 }
@@ -2104,7 +2154,7 @@ public class AntiBitch extends JavaPlugin implements Listener {
 
                         if (violations >= maxAutoFishViolations) {
                             String kickMessage = getConfig().getString("autofish.kick-message", "检测到自动钓鱼");
-                            player.kickPlayer(kickMessage);
+                            punish(player, kickMessage);
                             getLogger().info("玩家 " + player.getName() + " 因 AutoFish 作弊被踢出");
                             return;
                         }
@@ -2142,7 +2192,7 @@ public class AntiBitch extends JavaPlugin implements Listener {
 
                     if (violations >= maxNukerViolations) {
                         String kickMessage = getConfig().getString("nuker.kick-message", "检测到瞬间破坏多方块");
-                        player.kickPlayer(kickMessage);
+                        punish(player, kickMessage);
                         getLogger().info("玩家 " + player.getName() + " 因 Nuker 作弊被踢出");
                         return;
                     }
@@ -2159,7 +2209,7 @@ public class AntiBitch extends JavaPlugin implements Listener {
 
                 if (violations >= maxFastBreakViolations) {
                     String kickMessage = getConfig().getString("fastbreak.kick-message", "检测到破坏方块间隔过短");
-                    player.kickPlayer(kickMessage);
+                    punish(player, kickMessage);
                     getLogger().info("玩家 " + player.getName() + " 因 FastBreak 作弊被踢出");
                     return;
                 }
@@ -2187,7 +2237,7 @@ public class AntiBitch extends JavaPlugin implements Listener {
 
                         if (violations >= maxXrayViolations) {
                             String kickMessage = getConfig().getString("xray.kick-message", "检测到稀有矿石异常高产");
-                            player.kickPlayer(kickMessage);
+                            punish(player, kickMessage);
                             getLogger().info("玩家 " + player.getName() + " 因 XRay 作弊被踢出");
                             return;
                         }
@@ -2204,7 +2254,7 @@ public class AntiBitch extends JavaPlugin implements Listener {
                 int violations = breakReachViolations.getOrDefault(playerId, 0) + 1;
                 breakReachViolations.put(playerId, violations);
                 if (violations >= maxBreakReachViolations) {
-                    player.kickPlayer(getConfig().getString("breakreach.kick-message", "检测到破坏方块距离过远"));
+                    punish(player, getConfig().getString("breakreach.kick-message", "检测到破坏方块距离过远"));
                     getLogger().info("玩家 " + player.getName() + " 因 BreakReach 作弊被踢出");
                     return;
                 }
@@ -2221,7 +2271,7 @@ public class AntiBitch extends JavaPlugin implements Listener {
                     int violations = fastOreViolations.getOrDefault(playerId, 0) + 1;
                     fastOreViolations.put(playerId, violations);
                     if (violations >= maxFastOreViolations) {
-                        player.kickPlayer(getConfig().getString("fastore.kick-message", "检测到快速破坏矿石"));
+                        punish(player, getConfig().getString("fastore.kick-message", "检测到快速破坏矿石"));
                         getLogger().info("玩家 " + player.getName() + " 因 FastOre 作弊被踢出");
                         return;
                     }
@@ -2237,7 +2287,7 @@ public class AntiBitch extends JavaPlugin implements Listener {
                 int violations = breakWhileMovingViolations.getOrDefault(playerId, 0) + 1;
                 breakWhileMovingViolations.put(playerId, violations);
                 if (violations >= maxBreakWhileMovingViolations) {
-                    player.kickPlayer(getConfig().getString("breakwhilemoving.kick-message", "检测到移动中破坏方块"));
+                    punish(player, getConfig().getString("breakwhilemoving.kick-message", "检测到移动中破坏方块"));
                     getLogger().info("玩家 " + player.getName() + " 因 BreakWhileMoving 作弊被踢出");
                     return;
                 }
@@ -2268,7 +2318,7 @@ public class AntiBitch extends JavaPlugin implements Listener {
 
                 if (violations >= maxFastEatViolations) {
                     String kickMessage = getConfig().getString("fasteat.kick-message", "检测到进食间隔过短");
-                    player.kickPlayer(kickMessage);
+                    punish(player, kickMessage);
                     getLogger().info("玩家 " + player.getName() + " 因 FastEat 作弊被踢出");
                     return;
                 }
@@ -2289,7 +2339,7 @@ public class AntiBitch extends JavaPlugin implements Listener {
 
                 if (violations >= maxAutoSoupViolations) {
                     String kickMessage = getConfig().getString("autosoup.kick-message", "检测到自动喝汤");
-                    player.kickPlayer(kickMessage);
+                    punish(player, kickMessage);
                     getLogger().info("玩家 " + player.getName() + " 因 AutoSoup 作弊被踢出");
                     return;
                 }
@@ -2304,7 +2354,7 @@ public class AntiBitch extends JavaPlugin implements Listener {
                 int violations = fastPotionViolations.getOrDefault(playerId, 0) + 1;
                 fastPotionViolations.put(playerId, violations);
                 if (violations >= maxFastPotionViolations) {
-                    player.kickPlayer(getConfig().getString("fastpotion.kick-message", "检测到快速喝药水"));
+                    punish(player, getConfig().getString("fastpotion.kick-message", "检测到快速喝药水"));
                     getLogger().info("玩家 " + player.getName() + " 因 FastPotion 作弊被踢出");
                     return;
                 }
@@ -2319,7 +2369,7 @@ public class AntiBitch extends JavaPlugin implements Listener {
                 int violations = fastMilkViolations.getOrDefault(playerId, 0) + 1;
                 fastMilkViolations.put(playerId, violations);
                 if (violations >= maxFastMilkViolations) {
-                    player.kickPlayer(getConfig().getString("fastmilk.kick-message", "检测到快速喝牛奶"));
+                    punish(player, getConfig().getString("fastmilk.kick-message", "检测到快速喝牛奶"));
                     getLogger().info("玩家 " + player.getName() + " 因 FastMilk 作弊被踢出");
                     return;
                 }
@@ -2334,7 +2384,7 @@ public class AntiBitch extends JavaPlugin implements Listener {
                 int violations = fastHoneyViolations.getOrDefault(playerId, 0) + 1;
                 fastHoneyViolations.put(playerId, violations);
                 if (violations >= maxFastHoneyViolations) {
-                    player.kickPlayer(getConfig().getString("fasthoney.kick-message", "检测到快速喝蜂蜜"));
+                    punish(player, getConfig().getString("fasthoney.kick-message", "检测到快速喝蜂蜜"));
                     getLogger().info("玩家 " + player.getName() + " 因 FastHoney 作弊被踢出");
                     return;
                 }
@@ -2382,7 +2432,7 @@ public class AntiBitch extends JavaPlugin implements Listener {
 
                 if (violations >= maxWaterWalkViolations) {
                     String kickMessage = getConfig().getString("waterwalk.kick-message", "检测到水面行走");
-                    player.kickPlayer(kickMessage);
+                    punish(player, kickMessage);
                     getLogger().info("玩家 " + player.getName() + " 因 WaterWalk 作弊被踢出");
                     return;
                 }
@@ -2400,7 +2450,7 @@ public class AntiBitch extends JavaPlugin implements Listener {
 
             if (violations >= maxGlideViolations) {
                 String kickMessage = getConfig().getString("glide.kick-message", "检测到空中缓降滑行");
-                player.kickPlayer(kickMessage);
+                punish(player, kickMessage);
                 getLogger().info("玩家 " + player.getName() + " 因 Glide 作弊被踢出");
                 return;
             }
@@ -2413,7 +2463,7 @@ public class AntiBitch extends JavaPlugin implements Listener {
 
             if (violations >= maxStepViolations) {
                 String kickMessage = getConfig().getString("step.kick-message", "检测到异常台阶上升");
-                player.kickPlayer(kickMessage);
+                punish(player, kickMessage);
                 getLogger().info("玩家 " + player.getName() + " 因 Step 作弊被踢出");
                 return;
             }
@@ -2435,7 +2485,7 @@ public class AntiBitch extends JavaPlugin implements Listener {
 
                 if (violations >= maxSpiderViolations) {
                     String kickMessage = getConfig().getString("spider.kick-message", "检测到贴墙攀爬");
-                    player.kickPlayer(kickMessage);
+                    punish(player, kickMessage);
                     getLogger().info("玩家 " + player.getName() + " 因 Spider 作弊被踢出");
                     return;
                 }
@@ -2452,7 +2502,7 @@ public class AntiBitch extends JavaPlugin implements Listener {
 
                 if (violations >= maxNoWebViolations) {
                     String kickMessage = getConfig().getString("noweb.kick-message", "检测到蛛网内快速移动");
-                    player.kickPlayer(kickMessage);
+                    punish(player, kickMessage);
                     getLogger().info("玩家 " + player.getName() + " 因 NoWeb 作弊被踢出");
                     return;
                 }
@@ -2469,7 +2519,7 @@ public class AntiBitch extends JavaPlugin implements Listener {
 
                 if (violations >= maxFastLadderViolations) {
                     String kickMessage = getConfig().getString("fastladder.kick-message", "检测到梯子快速攀爬");
-                    player.kickPlayer(kickMessage);
+                    punish(player, kickMessage);
                     getLogger().info("玩家 " + player.getName() + " 因 FastLadder 作弊被踢出");
                     return;
                 }
@@ -2486,7 +2536,7 @@ public class AntiBitch extends JavaPlugin implements Listener {
 
             if (violations >= maxHighJumpViolations) {
                 String kickMessage = getConfig().getString("highjump.kick-message", "检测到异常高跳");
-                player.kickPlayer(kickMessage);
+                punish(player, kickMessage);
                 getLogger().info("玩家 " + player.getName() + " 因 HighJump 作弊被踢出");
                 return;
             }
@@ -2503,7 +2553,7 @@ public class AntiBitch extends JavaPlugin implements Listener {
 
                 if (violations >= maxDolphinViolations) {
                     String kickMessage = getConfig().getString("dolphin.kick-message", "检测到水中快速游泳");
-                    player.kickPlayer(kickMessage);
+                    punish(player, kickMessage);
                     getLogger().info("玩家 " + player.getName() + " 因 Dolphin 作弊被踢出");
                     return;
                 }
@@ -2518,7 +2568,7 @@ public class AntiBitch extends JavaPlugin implements Listener {
 
             if (violations >= maxPhaseViolations) {
                 String kickMessage = getConfig().getString("phase.kick-message", "检测到穿墙传送");
-                player.kickPlayer(kickMessage);
+                punish(player, kickMessage);
                 getLogger().info("玩家 " + player.getName() + " 因 Phase 作弊被踢出");
                 return;
             }
@@ -2532,7 +2582,7 @@ public class AntiBitch extends JavaPlugin implements Listener {
 
             if (violations >= maxBlinkViolations) {
                 String kickMessage = getConfig().getString("blink.kick-message", "检测到异常远距瞬移");
-                player.kickPlayer(kickMessage);
+                punish(player, kickMessage);
                 getLogger().info("玩家 " + player.getName() + " 因 Blink 作弊被踢出");
                 return;
             }
@@ -2549,7 +2599,7 @@ public class AntiBitch extends JavaPlugin implements Listener {
 
                 if (violations >= maxFastSneakViolations) {
                     String kickMessage = getConfig().getString("fastsneak.kick-message", "检测到潜行加速");
-                    player.kickPlayer(kickMessage);
+                    punish(player, kickMessage);
                     getLogger().info("玩家 " + player.getName() + " 因 FastSneak 作弊被踢出");
                     return;
                 }
@@ -2569,7 +2619,7 @@ public class AntiBitch extends JavaPlugin implements Listener {
 
                     if (violations >= maxDerpViolations) {
                         String kickMessage = getConfig().getString("derp.kick-message", "检测到头部异常转动");
-                        player.kickPlayer(kickMessage);
+                        punish(player, kickMessage);
                         getLogger().info("玩家 " + player.getName() + " 因 Derp 作弊被踢出");
                         return;
                     }
@@ -2588,7 +2638,7 @@ public class AntiBitch extends JavaPlugin implements Listener {
 
                 if (violations >= maxElytraSpeedViolations) {
                     String kickMessage = getConfig().getString("elytraspeed.kick-message", "检测到滑翔速度异常");
-                    player.kickPlayer(kickMessage);
+                    punish(player, kickMessage);
                     getLogger().info("玩家 " + player.getName() + " 因 ElytraSpeed 作弊被踢出");
                     return;
                 }
@@ -2603,7 +2653,7 @@ public class AntiBitch extends JavaPlugin implements Listener {
                 int violations = fastSprintViolations.getOrDefault(playerId, 0) + 1;
                 fastSprintViolations.put(playerId, violations);
                 if (violations >= maxFastSprintViolations) {
-                    player.kickPlayer(getConfig().getString("fastsprint.kick-message", "检测到疾跑速度异常"));
+                    punish(player, getConfig().getString("fastsprint.kick-message", "检测到疾跑速度异常"));
                     getLogger().info("玩家 " + player.getName() + " 因 FastSprint 作弊被踢出");
                     return;
                 }
@@ -2619,7 +2669,7 @@ public class AntiBitch extends JavaPlugin implements Listener {
                     int violations = iceSpeedViolations.getOrDefault(playerId, 0) + 1;
                     iceSpeedViolations.put(playerId, violations);
                     if (violations >= maxIceSpeedViolations) {
-                        player.kickPlayer(getConfig().getString("icespeed.kick-message", "检测到冰上加速"));
+                        punish(player, getConfig().getString("icespeed.kick-message", "检测到冰上加速"));
                         getLogger().info("玩家 " + player.getName() + " 因 IceSpeed 作弊被踢出");
                         return;
                     }
@@ -2637,7 +2687,7 @@ public class AntiBitch extends JavaPlugin implements Listener {
                     int violations = bhopViolations.getOrDefault(playerId, 0) + 1;
                     bhopViolations.put(playerId, violations);
                     if (violations >= maxBhopViolations) {
-                        player.kickPlayer(getConfig().getString("bhop.kick-message", "检测到连跳"));
+                        punish(player, getConfig().getString("bhop.kick-message", "检测到连跳"));
                         getLogger().info("玩家 " + player.getName() + " 因 Bhop 作弊被踢出");
                         return;
                     }
@@ -2651,7 +2701,7 @@ public class AntiBitch extends JavaPlugin implements Listener {
             int violations = airJumpViolations.getOrDefault(playerId, 0) + 1;
             airJumpViolations.put(playerId, violations);
             if (violations >= maxAirJumpViolations) {
-                player.kickPlayer(getConfig().getString("airjump.kick-message", "检测到空中起跳"));
+                punish(player, getConfig().getString("airjump.kick-message", "检测到空中起跳"));
                 getLogger().info("玩家 " + player.getName() + " 因 AirJump 作弊被踢出");
                 return;
             }
@@ -2664,7 +2714,7 @@ public class AntiBitch extends JavaPlugin implements Listener {
             int violations = jetpackViolations.getOrDefault(playerId, 0) + 1;
             jetpackViolations.put(playerId, violations);
             if (violations >= maxJetpackViolations) {
-                player.kickPlayer(getConfig().getString("jetpack.kick-message", "检测到持续上升"));
+                punish(player, getConfig().getString("jetpack.kick-message", "检测到持续上升"));
                 getLogger().info("玩家 " + player.getName() + " 因 Jetpack 作弊被踢出");
                 return;
             }
@@ -2677,7 +2727,7 @@ public class AntiBitch extends JavaPlugin implements Listener {
                 int violations = fastClimbVineViolations.getOrDefault(playerId, 0) + 1;
                 fastClimbVineViolations.put(playerId, violations);
                 if (violations >= maxFastClimbVineViolations) {
-                    player.kickPlayer(getConfig().getString("fastclimbvine.kick-message", "检测到藤蔓快速攀爬"));
+                    punish(player, getConfig().getString("fastclimbvine.kick-message", "检测到藤蔓快速攀爬"));
                     getLogger().info("玩家 " + player.getName() + " 因 FastClimbVine 作弊被踢出");
                     return;
                 }
@@ -2690,7 +2740,7 @@ public class AntiBitch extends JavaPlugin implements Listener {
             int violations = fastDescendViolations.getOrDefault(playerId, 0) + 1;
             fastDescendViolations.put(playerId, violations);
             if (violations >= maxFastDescendViolations) {
-                player.kickPlayer(getConfig().getString("fastdescend.kick-message", "检测到异常快速下落"));
+                punish(player, getConfig().getString("fastdescend.kick-message", "检测到异常快速下落"));
                 getLogger().info("玩家 " + player.getName() + " 因 FastDescend 作弊被踢出");
                 return;
             }
@@ -2703,7 +2753,7 @@ public class AntiBitch extends JavaPlugin implements Listener {
             int violations = strafeViolations.getOrDefault(playerId, 0) + 1;
             strafeViolations.put(playerId, violations);
             if (violations >= maxStrafeViolations) {
-                player.kickPlayer(getConfig().getString("strafe.kick-message", "检测到疾跑横向位移异常"));
+                punish(player, getConfig().getString("strafe.kick-message", "检测到疾跑横向位移异常"));
                 getLogger().info("玩家 " + player.getName() + " 因 Strafe 作弊被踢出");
                 return;
             }
@@ -2716,7 +2766,7 @@ public class AntiBitch extends JavaPlugin implements Listener {
             int violations = floatViolations.getOrDefault(playerId, 0) + 1;
             floatViolations.put(playerId, violations);
             if (violations >= maxFloatViolations) {
-                player.kickPlayer(getConfig().getString("float.kick-message", "检测到空中悬浮"));
+                punish(player, getConfig().getString("float.kick-message", "检测到空中悬浮"));
                 getLogger().info("玩家 " + player.getName() + " 因 Float 作弊被踢出");
                 return;
             }
@@ -2728,7 +2778,7 @@ public class AntiBitch extends JavaPlugin implements Listener {
             int violations = fastSneakAirViolations.getOrDefault(playerId, 0) + 1;
             fastSneakAirViolations.put(playerId, violations);
             if (violations >= maxFastSneakAirViolations) {
-                player.kickPlayer(getConfig().getString("fastsneakair.kick-message", "检测到空中潜行"));
+                punish(player, getConfig().getString("fastsneakair.kick-message", "检测到空中潜行"));
                 getLogger().info("玩家 " + player.getName() + " 因 FastSneakAir 作弊被踢出");
                 return;
             }
@@ -2742,7 +2792,7 @@ public class AntiBitch extends JavaPlugin implements Listener {
                 int violations = headRollViolations.getOrDefault(playerId, 0) + 1;
                 headRollViolations.put(playerId, violations);
                 if (violations >= maxHeadRollViolations) {
-                    player.kickPlayer(getConfig().getString("headroll.kick-message", "检测到头部异常俯仰"));
+                    punish(player, getConfig().getString("headroll.kick-message", "检测到头部异常俯仰"));
                     getLogger().info("玩家 " + player.getName() + " 因 HeadRoll 作弊被踢出");
                     return;
                 }
@@ -2756,7 +2806,7 @@ public class AntiBitch extends JavaPlugin implements Listener {
             int violations = teleportUpViolations.getOrDefault(playerId, 0) + 1;
             teleportUpViolations.put(playerId, violations);
             if (violations >= maxTeleportUpViolations) {
-                player.kickPlayer(getConfig().getString("teleportup.kick-message", "检测到纵向瞬移上升"));
+                punish(player, getConfig().getString("teleportup.kick-message", "检测到纵向瞬移上升"));
                 getLogger().info("玩家 " + player.getName() + " 因 TeleportUp 作弊被踢出");
                 return;
             }
@@ -2784,7 +2834,7 @@ public class AntiBitch extends JavaPlugin implements Listener {
 
                 if (violations >= maxAntiKnockbackViolations) {
                     String kickMessage = getConfig().getString("antiknockback.kick-message", "检测到击退抵抗");
-                    player.kickPlayer(kickMessage);
+                    punish(player, kickMessage);
                     getLogger().info("玩家 " + player.getName() + " 因 AntiKnockback 作弊被踢出");
                 }
             }
@@ -2844,7 +2894,7 @@ public class AntiBitch extends JavaPlugin implements Listener {
 
                     if (violations >= maxBoatFlyViolations) {
                         String kickMessage = getConfig().getString("boatfly.kick-message", "检测到骑船滞空");
-                        player.kickPlayer(kickMessage);
+                        punish(player, kickMessage);
                         getLogger().info("玩家 " + player.getName() + " 因 BoatFly 作弊被踢出");
                         vehicle.eject();
                         boatAirMoves.remove(playerId);
@@ -2871,7 +2921,7 @@ public class AntiBitch extends JavaPlugin implements Listener {
                 int violations = fastDropViolations.getOrDefault(playerId, 0) + 1;
                 fastDropViolations.put(playerId, violations);
                 if (violations >= maxFastDropViolations) {
-                    player.kickPlayer(getConfig().getString("fastdrop.kick-message", "检测到快速丢物品"));
+                    punish(player, getConfig().getString("fastdrop.kick-message", "检测到快速丢物品"));
                     getLogger().info("玩家 " + player.getName() + " 因 FastDrop 作弊被踢出");
                 }
             }
@@ -2895,7 +2945,7 @@ public class AntiBitch extends JavaPlugin implements Listener {
                 int violations = fastPickupViolations.getOrDefault(playerId, 0) + 1;
                 fastPickupViolations.put(playerId, violations);
                 if (violations >= maxFastPickupViolations) {
-                    player.kickPlayer(getConfig().getString("fastpickup.kick-message", "检测到快速捡物品"));
+                    punish(player, getConfig().getString("fastpickup.kick-message", "检测到快速捡物品"));
                     getLogger().info("玩家 " + player.getName() + " 因 FastPickup 作弊被踢出");
                 }
             }
@@ -2919,7 +2969,7 @@ public class AntiBitch extends JavaPlugin implements Listener {
                 int violations = fastProjectileViolations.getOrDefault(playerId, 0) + 1;
                 fastProjectileViolations.put(playerId, violations);
                 if (violations >= maxFastProjectileViolations) {
-                    player.kickPlayer(getConfig().getString("fastprojectile.kick-message", "检测到快速发射抛射物"));
+                    punish(player, getConfig().getString("fastprojectile.kick-message", "检测到快速发射抛射物"));
                     getLogger().info("玩家 " + player.getName() + " 因 FastProjectile 作弊被踢出");
                 }
             }
@@ -2942,7 +2992,7 @@ public class AntiBitch extends JavaPlugin implements Listener {
                 int violations = sprintSpamViolations.getOrDefault(playerId, 0) + 1;
                 sprintSpamViolations.put(playerId, violations);
                 if (violations >= maxSprintSpamViolations) {
-                    player.kickPlayer(getConfig().getString("sprintspam.kick-message", "检测到快速疾跑切换"));
+                    punish(player, getConfig().getString("sprintspam.kick-message", "检测到快速疾跑切换"));
                     getLogger().info("玩家 " + player.getName() + " 因 SprintSpam 作弊被踢出");
                 }
             }
@@ -2965,7 +3015,7 @@ public class AntiBitch extends JavaPlugin implements Listener {
                 int violations = flightSpamViolations.getOrDefault(playerId, 0) + 1;
                 flightSpamViolations.put(playerId, violations);
                 if (violations >= maxFlightSpamViolations) {
-                    player.kickPlayer(getConfig().getString("flightspam.kick-message", "检测到快速飞行切换"));
+                    punish(player, getConfig().getString("flightspam.kick-message", "检测到快速飞行切换"));
                     getLogger().info("玩家 " + player.getName() + " 因 FlightSpam 作弊被踢出");
                 }
             }
@@ -2989,7 +3039,7 @@ public class AntiBitch extends JavaPlugin implements Listener {
                 int violations = glideSpamViolations.getOrDefault(playerId, 0) + 1;
                 glideSpamViolations.put(playerId, violations);
                 if (violations >= maxGlideSpamViolations) {
-                    player.kickPlayer(getConfig().getString("glidespam.kick-message", "检测到快速滑翔切换"));
+                    punish(player, getConfig().getString("glidespam.kick-message", "检测到快速滑翔切换"));
                     getLogger().info("玩家 " + player.getName() + " 因 GlideSpam 作弊被踢出");
                 }
             }
@@ -3013,7 +3063,7 @@ public class AntiBitch extends JavaPlugin implements Listener {
                 int violations = swimSpamViolations.getOrDefault(playerId, 0) + 1;
                 swimSpamViolations.put(playerId, violations);
                 if (violations >= maxSwimSpamViolations) {
-                    player.kickPlayer(getConfig().getString("swimspam.kick-message", "检测到快速游泳切换"));
+                    punish(player, getConfig().getString("swimspam.kick-message", "检测到快速游泳切换"));
                     getLogger().info("玩家 " + player.getName() + " 因 SwimSpam 作弊被踢出");
                 }
             }
@@ -3036,7 +3086,7 @@ public class AntiBitch extends JavaPlugin implements Listener {
                 int violations = swapSpamViolations.getOrDefault(playerId, 0) + 1;
                 swapSpamViolations.put(playerId, violations);
                 if (violations >= maxSwapSpamViolations) {
-                    player.kickPlayer(getConfig().getString("swapspam.kick-message", "检测到快速主副手切换"));
+                    punish(player, getConfig().getString("swapspam.kick-message", "检测到快速主副手切换"));
                     getLogger().info("玩家 " + player.getName() + " 因 SwapSpam 作弊被踢出");
                 }
             }
@@ -3059,7 +3109,7 @@ public class AntiBitch extends JavaPlugin implements Listener {
                 int violations = noHungerViolations.getOrDefault(playerId, 0) + 1;
                 noHungerViolations.put(playerId, violations);
                 if (violations >= maxNoHungerViolations) {
-                    player.kickPlayer(getConfig().getString("nohunger.kick-message", "检测到饥饿值异常"));
+                    punish(player, getConfig().getString("nohunger.kick-message", "检测到饥饿值异常"));
                     getLogger().info("玩家 " + player.getName() + " 因 NoHunger 作弊被踢出");
                 }
             }
@@ -3081,7 +3131,7 @@ public class AntiBitch extends JavaPlugin implements Listener {
                 int violations = fastShearViolations.getOrDefault(playerId, 0) + 1;
                 fastShearViolations.put(playerId, violations);
                 if (violations >= maxFastShearViolations) {
-                    player.kickPlayer(getConfig().getString("fastshear.kick-message", "检测到快速剪羊毛"));
+                    punish(player, getConfig().getString("fastshear.kick-message", "检测到快速剪羊毛"));
                     getLogger().info("玩家 " + player.getName() + " 因 FastShear 作弊被踢出");
                 }
             }
@@ -3104,7 +3154,7 @@ public class AntiBitch extends JavaPlugin implements Listener {
                 int violations = fastBucketEmptyViolations.getOrDefault(playerId, 0) + 1;
                 fastBucketEmptyViolations.put(playerId, violations);
                 if (violations >= maxFastBucketEmptyViolations) {
-                    player.kickPlayer(getConfig().getString("fastbucketempty.kick-message", "检测到快速倒空桶"));
+                    punish(player, getConfig().getString("fastbucketempty.kick-message", "检测到快速倒空桶"));
                     getLogger().info("玩家 " + player.getName() + " 因 FastBucketEmpty 作弊被踢出");
                 }
             }
@@ -3127,7 +3177,7 @@ public class AntiBitch extends JavaPlugin implements Listener {
                 int violations = fastBucketFillViolations.getOrDefault(playerId, 0) + 1;
                 fastBucketFillViolations.put(playerId, violations);
                 if (violations >= maxFastBucketFillViolations) {
-                    player.kickPlayer(getConfig().getString("fastbucketfill.kick-message", "检测到快速装满桶"));
+                    punish(player, getConfig().getString("fastbucketfill.kick-message", "检测到快速装满桶"));
                     getLogger().info("玩家 " + player.getName() + " 因 FastBucketFill 作弊被踢出");
                 }
             }
@@ -3150,7 +3200,7 @@ public class AntiBitch extends JavaPlugin implements Listener {
                 int violations = bedSpamViolations.getOrDefault(playerId, 0) + 1;
                 bedSpamViolations.put(playerId, violations);
                 if (violations >= maxBedSpamViolations) {
-                    player.kickPlayer(getConfig().getString("bedspam.kick-message", "检测到快速上床"));
+                    punish(player, getConfig().getString("bedspam.kick-message", "检测到快速上床"));
                     getLogger().info("玩家 " + player.getName() + " 因 BedSpam 作弊被踢出");
                 }
             }
@@ -3174,7 +3224,7 @@ public class AntiBitch extends JavaPlugin implements Listener {
                 int violations = autoTotemViolations.getOrDefault(playerId, 0) + 1;
                 autoTotemViolations.put(playerId, violations);
                 if (violations >= maxAutoTotemViolations) {
-                    player.kickPlayer(getConfig().getString("autototem.kick-message", "检测到自动图腾"));
+                    punish(player, getConfig().getString("autototem.kick-message", "检测到自动图腾"));
                     getLogger().info("玩家 " + player.getName() + " 因 AutoTotem 作弊被踢出");
                 }
             }
@@ -3197,7 +3247,7 @@ public class AntiBitch extends JavaPlugin implements Listener {
                 int violations = fastExpViolations.getOrDefault(playerId, 0) + 1;
                 fastExpViolations.put(playerId, violations);
                 if (violations >= maxFastExpViolations) {
-                    player.kickPlayer(getConfig().getString("fastexp.kick-message", "检测到经验获取过快"));
+                    punish(player, getConfig().getString("fastexp.kick-message", "检测到经验获取过快"));
                     getLogger().info("玩家 " + player.getName() + " 因 FastExp 作弊被踢出");
                 }
             }
@@ -3221,7 +3271,7 @@ public class AntiBitch extends JavaPlugin implements Listener {
                 chatSpamViolations.put(playerId, violations);
                 if (violations >= maxChatSpamViolations) {
                     final String msg = getConfig().getString("chatspam.kick-message", "检测到刷屏聊天");
-                    org.bukkit.Bukkit.getScheduler().runTask(this, () -> player.kickPlayer(msg));
+                    org.bukkit.Bukkit.getScheduler().runTask(this, () -> punish(player, msg));
                     getLogger().info("玩家 " + player.getName() + " 因 ChatSpam 作弊被踢出");
                 }
             }
@@ -3244,7 +3294,7 @@ public class AntiBitch extends JavaPlugin implements Listener {
                 int violations = commandSpamViolations.getOrDefault(playerId, 0) + 1;
                 commandSpamViolations.put(playerId, violations);
                 if (violations >= maxCommandSpamViolations) {
-                    player.kickPlayer(getConfig().getString("commandspam.kick-message", "检测到刷屏命令"));
+                    punish(player, getConfig().getString("commandspam.kick-message", "检测到刷屏命令"));
                     getLogger().info("玩家 " + player.getName() + " 因 CommandSpam 作弊被踢出");
                 }
             }
@@ -3267,7 +3317,7 @@ public class AntiBitch extends JavaPlugin implements Listener {
                 int violations = fastEggViolations.getOrDefault(playerId, 0) + 1;
                 fastEggViolations.put(playerId, violations);
                 if (violations >= maxFastEggViolations) {
-                    player.kickPlayer(getConfig().getString("fastegg.kick-message", "检测到快速丢鸡蛋"));
+                    punish(player, getConfig().getString("fastegg.kick-message", "检测到快速丢鸡蛋"));
                     getLogger().info("玩家 " + player.getName() + " 因 FastEgg 作弊被踢出");
                 }
             }
